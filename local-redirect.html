@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本地开发环境重定向</title>
+    <script>
+        // 检查是否是本地开发环境
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            // 询问用户是否要重定向到生产环境域名
+            const redirect = confirm('检测到您正在使用本地开发环境。是否要重定向到 http://moyoubai.com');
+            
+            if (redirect) {
+                // 重定向到生产环境域名
+                window.location.href = 'http://moyoubai.com';
+            } else {
+                // 保持在本地环境，显示提示信息
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.getElementById('message').innerHTML = `
+                        <div class="p-4 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
+                            <p>您选择继续使用本地开发环境。</p>
+                            <p>本地访问地址: <a href="http://localhost:8000" class="text-blue-600 underline">http://localhost:8000</a></p>
+                            <p>生产环境地址: <a href="http://moyoubai.com" class="text-blue-600 underline">http://moyoubai.com</a></p>
+                        </div>
+                    `;
+                });
+            }
+        } else {
+            // 如果不是本地环境，直接重定向到网站首页
+            window.location.href = 'http://moyoubai.com';
+        }
+    </script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 1rem;
+        }
+        p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        .loader {
+            border: 4px solid rgba(0,0,0,0.1);
+            border-left-color: #333;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="loader"></div>
+        <h1>正在检测访问环境...</h1>
+        <p>请稍候，或点击下方链接手动访问：</p>
+        <p>
+            <a href="http://localhost:8000" class="text-blue-600 underline">本地开发环境</a> | 
+            <a href="http://moyoubai.com" class="text-blue-600 underline">生产环境</a>
+        </p>
+        <div id="message"></div>
+    </div>
+</body>
+</html>

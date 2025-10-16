@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>莫攸白 - 电子书籍</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- 统一的 Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B0000', // 墨黑
+                        secondary: '#C41E3A', // 朱红
+                        accent: '#D4AF37', // 鎏金
+                        highlight: '#1E90FF', // 青蓝
+                        dark: '#121212',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['"Noto Serif SC"', 'serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'ink': 'ink 2s ease-in-out',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        ink: {
+                            '0%': { opacity: 0, transform: 'scale(0.8)' },
+                            '100%': { opacity: 1, transform: 'scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+            .text-shadow-lg {
+                text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8);
+            }
+            .bg-blur {
+                backdrop-filter: blur(8px);
+            }
+            .ink-splash {
+                position: relative;
+                overflow: hidden;
+            }
+            .ink-splash::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                transition: width 0.6s, height 0.6s;
+            }
+            .ink-splash:hover::after {
+                width: 300px;
+                height: 300px;
+            }
+            .book-card {
+                transition: all 0.3s ease;
+            }
+            .book-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            }
+            .book-cover {
+                height: 280px;
+                object-fit: cover;
+            }
+            .library-bg {
+                background-image: url('https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/a624cab2e60e4316a592cac8441a9fe8~tplv-a9rns2rl98-image.image?rcl=2025093000130485D7F4808FCB6A257216&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1761754416&x-signature=CMcPMUOEMB56wLEMnXV2WISke5o%3D');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-serif">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center bg-black bg-opacity-80 bg-blur">
+            <a href="index.html" class="text-2xl font-bold text-accent flex items-center">
+                <span class="mr-2">莫攸白</span>
+                <span class="text-xs text-gray-400">独立音乐人</span>
+            </a>
+            <div class="hidden md:flex space-x-8">
+                <a href="index.html#home" class="hover:text-accent transition-colors">首页</a>
+                <a href="index.html#lyrics" class="hover:text-accent transition-colors">歌词</a>
+                <a href="e-books.html" class="text-accent font-bold">电子书</a>
+                <a href="index.html#about" class="hover:text-accent transition-colors">关于</a>
+                <a href="index.html#contact" class="hover:text-accent transition-colors">联系</a>
+            </div>
+            <div class="md:hidden">
+                <button id="menu-toggle" class="text-white focus:outline-none">
+                    <i class="fa fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- 移动端菜单 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-black bg-opacity-95 bg-blur">
+            <div class="container mx-auto px-4 py-4 flex flex-col space-y-4">
+                <a href="index.html#home" class="hover:text-accent transition-colors py-2 border-b border-gray-800">首页</a>
+                <a href="index.html#lyrics" class="hover:text-accent transition-colors py-2 border-b border-gray-800">歌词</a>
+                <a href="e-books.html" class="text-accent font-bold py-2 border-b border-gray-800">电子书</a>
+                <a href="index.html#about" class="hover:text-accent transition-colors py-2 border-b border-gray-800">关于</a>
+                <a href="index.html#contact" class="hover:text-accent transition-colors py-2">联系</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区 -->
+    <section id="ebooks-hero" class="min-h-screen flex items-center justify-center relative overflow-hidden library-bg">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="container mx-auto px-4 z-10 text-center">
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-shadow-lg animate-ink">电子书籍</h1>
+            <p class="text-xl md:text-2xl mb-8 text-gray-300 max-w-2xl mx-auto">探索莫攸白的文学世界，感受文字与音乐的交织之美</p>
+            <div class="flex justify-center">
+                <a href="#book-collection" class="px-8 py-3 bg-secondary hover:bg-opacity-80 text-white rounded-full transition-all transform hover:scale-105 ink-splash">
+                    <i class="fa fa-book mr-2"></i>浏览作品集
+                </a>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <a href="#book-collection" class="text-white opacity-70 hover:opacity-100">
+                <i class="fa fa-chevron-down text-2xl"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- 书籍集合 -->
+    <section id="book-collection" class="min-h-screen py-20 relative bg-gradient-to-b from-black to-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4 text-accent">电子书集</h2>
+                <div class="w-24 h-1 bg-secondary mx-auto"></div>
+                <p class="mt-6 text-gray-400 max-w-2xl mx-auto">
+                    每一本书都是一段心灵旅程，邀请您一同探索文字的魅力与深意。
+                </p>
+            </div>
+
+            <!-- 书籍网格 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
+                <!-- 书籍 1 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl">
+                    <a href="https://yuedu.163.com/source/24ceb1a2d8d14d99aa63a52d587115e7_4" target="_blank" class="block">
+                        <div class="h-64 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-6xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-bold text-accent mb-2">缓缓蒹葭</h3>
+                            <div class="flex justify-center mt-3">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 2 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl">
+                    <a href="https://caiwei.yuedu.163.com/source/bccda4ccea3e4841aba2879521ff17cb_4" target="_blank" class="block">
+                        <div class="h-64 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-6xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-bold text-accent mb-2">属于你的灵魂香</h3>
+                            <div class="flex justify-center mt-3">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 3 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl">
+                    <a href="https://caiwei.yuedu.163.com/source/d732f69761aa485e905f03aef772b47e_4" target="_blank" class="block">
+                        <div class="h-64 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-6xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-bold text-accent mb-2">倾许你一世醉音欢</h3>
+                            <div class="flex justify-center mt-3">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 4 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl">
+                    <a href="https://read.douban.com/column/7692203/?dcs=douban-search" target="_blank" class="block">
+                        <div class="h-64 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-6xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-bold text-accent mb-2">寄素帛予你</h3>
+                            <div class="flex justify-center mt-3">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 5 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl">
+                    <a href="https://www.amazon.com/dp/B0F1YRBCHG" target="_blank" class="block">
+                        <div class="h-64 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-6xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-bold text-accent mb-2">桃梨叩年华</h3>
+                            <div class="flex justify-center mt-3">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 6 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl">
+                    <a href="https://www.amazon.com/dp/B0F1ZCVF38" target="_blank" class="block">
+                        <div class="h-64 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-6xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-bold text-accent mb-2">芳华沉沉叩心门</h3>
+                            <div class="flex justify-center mt-3">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 7 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl">
+                    <a href="https://www.amazon.com/dp/B0F2TLBBPC" target="_blank" class="block">
+                        <div class="h-64 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-6xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-bold text-accent mb-2">我歌锦年，你吟良辰</h3>
+                            <div class="flex justify-center mt-3">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 8 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl">
+                    <a href="https://www.amazon.com/dp/B0F2XGXB22" target="_blank" class="block">
+                        <div class="h-64 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-6xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-bold text-accent mb-2">诗意断章: （2021年-2025年）</h3>
+                            <div class="flex justify-center mt-3">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 9 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl">
+                    <a href="https://www.amazon.com/dp/B0F3DG93N2" target="_blank" class="block">
+                        <div class="h-64 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-6xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-bold text-accent mb-2">有生之年必读的101本书（上部：20本）</h3>
+                            <div class="flex justify-center mt-3">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 10 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl">
+                    <a href="https://www.amazon.co.uk/dp/B0F3TM5G1M" target="_blank" class="block">
+                        <div class="h-64 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-6xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-bold text-accent mb-2">有生之年必读的101本书（中部:30本)</h3>
+                            <div class="flex justify-center mt-3">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 11 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl">
+                    <a href="https://www.amazon.com/dp/B0F8GHTPWL" target="_blank" class="block">
+                        <div class="h-64 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-6xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-bold text-accent mb-2">风云奇幻录</h3>
+                            <div class="flex justify-center mt-3">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 12 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl">
+                    <a href="https://www.amazon.com/dp/B0F28CD13J" target="_blank" class="block">
+                        <div class="h-64 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-6xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-bold text-accent mb-2">诗歌：桃梨叩年华: （中英）</h3>
+                            <div class="flex justify-center mt-3">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 13 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl">
+                    <a href="https://www.amazon.co.uk/dp/B0FD7YGJV8" target="_blank" class="block">
+                        <div class="h-64 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-6xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-lg font-bold text-accent mb-2">惊世红妆：她在古代搞事业</h3>
+                            <div class="flex justify-center mt-3">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-black py-12">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-8">
+                <h3 class="text-2xl font-bold text-accent">莫攸白</h3>
+                <p class="text-gray-400 mt-2">独立音乐人 & 作家</p>
+            </div>
+            <div class="flex justify-center space-x-6 mb-8">
+                <a href="#" class="text-gray-400 hover:text-accent transition-colors">
+                    <i class="fa fa-weibo text-2xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-accent transition-colors">
+                    <i class="fa fa-wechat text-2xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-accent transition-colors">
+                    <i class="fa fa-instagram text-2xl"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-accent transition-colors">
+                    <i class="fa fa-twitter text-2xl"></i>
+                </a>
+            </div>
+            <div class="text-center text-gray-500 text-sm">
+                <p>&copy; 2025 莫攸白. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-black', 'shadow-lg');
+                navbar.classList.remove('bg-opacity-80');
+            } else {
+                navbar.classList.remove('bg-black', 'shadow-lg');
+                navbar.classList.add('bg-opacity-80');
+            }
+        });
+
+        // 移动端菜单切换
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    // 关闭移动端菜单
+                    document.getElementById('mobile-menu').classList.add('hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
