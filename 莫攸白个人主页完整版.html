@@ -1,0 +1,2749 @@
+<html lang="zh-CN"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>莫攸白 - 独立音乐人</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <!-- 统一的 Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8B0000', // 墨黑
+                        secondary: '#C41E3A', // 朱红
+                        accent: '#D4AF37', // 鎏金
+                        highlight: '#1E90FF', // 青蓝
+                        dark: '#121212',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        serif: ['"Noto Serif SC"', 'serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'ink': 'ink 2s ease-in-out',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        ink: {
+                            '0%': { opacity: 0, transform: 'scale(0.8)' },
+                            '100%': { opacity: 1, transform: 'scale(1)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            }
+            .text-shadow-lg {
+                text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.8);
+            }
+            .bg-blur {
+                backdrop-filter: blur(8px);
+            }
+            .ink-splash {
+                position: relative;
+                overflow: hidden;
+            }
+            .ink-splash::after {
+                content: '';
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                width: 0;
+                height: 0;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                transition: width 0.6s, height 0.6s;
+            }
+            .ink-splash:hover::after {
+                width: 300px;
+                height: 300px;
+            }
+            .scroll-snap {
+                scroll-snap-type: y mandatory;
+            }
+            .scroll-snap > section {
+                scroll-snap-align: start;
+            }
+            .music-wave {
+                position: relative;
+                height: 60px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .music-wave span {
+                display: block;
+                width: 3px;
+                margin: 0 2px;
+                background-color: #D4AF37;
+                animation: wave 1.2s linear infinite;
+            }
+            @keyframes wave {
+                0% {
+                    height: 10px;
+                }
+                50% {
+                    height: 40px;
+                }
+                100% {
+                    height: 10px;
+                }
+            }
+            .music-wave span:nth-child(2) {
+                animation-delay: 0.1s;
+            }
+            .music-wave span:nth-child(3) {
+                animation-delay: 0.2s;
+            }
+            .music-wave span:nth-child(4) {
+                animation-delay: 0.3s;
+            }
+            .music-wave span:nth-child(5) {
+                animation-delay: 0.4s;
+            }
+            .lyrics-container {
+                height: 120px;
+                overflow: hidden;
+                position: relative;
+            }
+            .lyrics {
+                position: absolute;
+                width: 100%;
+                transition: transform 0.5s ease;
+            }
+            .lyric-line {
+                margin: 8px 0;
+                padding: 4px 0;
+                color: #9ca3af;
+                transition: all 0.3s ease;
+                opacity: 0.8;
+                transform: scale(0.95);
+                height: 40px;
+                line-height: 40px;
+            }
+            .lyric-line.active {
+                color: #f59e0b;
+                font-weight: bold;
+                opacity: 1;
+                transform: scale(1.05);
+                text-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+            }
+            .lyrics-container {
+                position: relative;
+                overflow: hidden;
+                height: 240px;
+            }
+            .lyrics {
+                position: absolute;
+                top: 50%;
+                left: 0;
+                width: 100%;
+                transform: translateY(-50%);
+                transition: transform 0.3s ease-in-out;
+            }
+            .ink-bg {
+                background-image: url('https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/a624cab2e60e4316a592cac8441a9fe8~tplv-a9rns2rl98-image.image?rcl=2025093000130485D7F4808FCB6A257216&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1761754416&x-signature=CMcPMUOEMB56wLEMnXV2WISke5o%3D');
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }
+            .guzheng-bg {
+                background-image: url('https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/414c5fdd23b94a07a90048c50d431882~tplv-a9rns2rl98-image.image?rcl=2025093000130485D7F4808FCB6A257216&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1761754413&x-signature=77pMfWf3GbWgujBhh6QhOSmEjko%3D');
+                background-size: cover;
+                background-position: center;
+            }
+            .player-bg {
+                background-image: url('https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/e3acf206c45e495aa6adec140a8ebd6c~tplv-a9rns2rl98-image.image?rcl=2025093000130485D7F4808FCB6A257216&rk3s=8e244e95&rrcfp=f06b921b&x-expires=1761754414&x-signature=vO71NfaKwMKqWZYg%2FPqm8g5Xe4s%3D');
+                background-size: cover;
+                background-position: center;
+            }
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-serif">
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 left-0 w-full z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center bg-black bg-opacity-80 bg-blur">
+            <a href="#" class="text-2xl font-bold text-accent flex items-center">
+                <span class="mr-2">莫攸白</span>
+                <span class="text-xs text-gray-400">独立音乐人</span>
+            </a>
+            <div class="hidden md:flex space-x-8">
+                <a href="#home" class="hover:text-accent transition-colors">首页</a>
+                <a href="#lyrics" class="hover:text-accent transition-colors">歌词</a>
+                <a href="#about" class="hover:text-accent transition-colors">关于</a>
+                <a href="#contact" class="hover:text-accent transition-colors">联系</a>
+                <a href="audio-albums.html" class="hover:text-accent transition-colors">有声专辑</a>
+                <a href="e-books.html" class="hover:text-accent transition-colors">电子书籍</a>
+            </div>
+            <div class="md:hidden">
+                <button id="menu-toggle" class="text-white focus:outline-none">
+                    <i class="fa fa-bars text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- 移动端菜单 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-black bg-opacity-95 bg-blur">
+            <div class="container mx-auto px-4 py-4 flex flex-col space-y-4">
+                <a href="#home" class="hover:text-accent transition-colors py-2 border-b border-gray-800">首页</a>
+                <a href="#lyrics" class="hover:text-accent transition-colors py-2 border-b border-gray-800">歌词</a>
+                <a href="#about" class="hover:text-accent transition-colors py-2 border-b border-gray-800">关于</a>
+                <a href="#contact" class="hover:text-accent transition-colors py-2 border-b border-gray-800">联系</a>
+                <a href="audio-albums.html" class="hover:text-accent transition-colors py-2 border-b border-gray-800">有声专辑</a>
+                <a href="e-books.html" class="hover:text-accent transition-colors py-2">电子书籍</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区 -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative overflow-hidden ink-bg">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="container mx-auto px-4 z-10 text-center">
+            <h1 class="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 text-shadow-lg animate-ink">莫攸白</h1>
+            <p class="text-xl md:text-2xl mb-8 text-gray-300 max-w-2xl mx-auto">融合传统与现代的独立音乐人，用音乐讲述东方故事</p>
+            <div class="flex flex-col md:flex-row justify-center gap-4">
+                <a href="#lyrics" class="px-8 py-3 bg-secondary hover:bg-opacity-80 text-white rounded-full transition-all transform hover:scale-105 ink-splash">
+                    <i class="fa fa-book mr-2"></i>浏览歌词
+                </a>
+                <a href="#about" class="px-8 py-3 bg-transparent border-2 border-accent text-accent hover:bg-accent hover:text-black rounded-full transition-all transform hover:scale-105">
+                    <i class="fa fa-user mr-2"></i>了解更多
+                </a>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <a href="#lyrics" class="text-white opacity-70 hover:opacity-100">
+                <i class="fa fa-chevron-down text-2xl"></i>
+            </a>
+        </div>
+    </section>
+
+    <!-- 歌词页面 -->
+    <section id="lyrics" class="min-h-screen py-20 relative bg-gradient-to-b from-black to-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4 text-accent">歌词集</h2>
+                <div class="w-24 h-1 bg-secondary mx-auto"></div>
+                <p class="mt-6 text-gray-400 max-w-2xl mx-auto">
+                    探索莫攸白音乐作品中的诗意世界，感受每首歌背后的故事与情感。
+                </p>
+            </div>
+
+            <!-- 歌曲选择器 -->
+            <div class="max-w-4xl mx-auto mb-12">
+                <div class="bg-gray-800 bg-opacity-50 rounded-xl p-6 shadow-2xl">
+                    <h3 class="text-xl font-bold mb-6 text-center text-accent">选择歌曲</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="song-selector">
+                        <div class="bg-gray-900 bg-opacity-50 rounded-lg p-4 cursor-pointer hover:bg-opacity-70 transition-all song-item active" data-song-id="1">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded overflow-hidden mr-3 bg-gray-700 flex items-center justify-center">
+                                    <i class="fa fa-music text-accent text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">古城谣</h4>
+                                    <p class="text-xs text-gray-400">语梦</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 rounded-lg p-4 cursor-pointer hover:bg-opacity-70 transition-all song-item" data-song-id="2">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded overflow-hidden mr-3 bg-gray-700 flex items-center justify-center">
+                                    <i class="fa fa-music text-accent text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">陌上桑</h4>
+                                    <p class="text-xs text-gray-400">沐稍</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 rounded-lg p-4 cursor-pointer hover:bg-opacity-70 transition-all song-item" data-song-id="3">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded overflow-hidden mr-3 bg-gray-700 flex items-center justify-center">
+                                    <i class="fa fa-music text-accent text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">八月秋</h4>
+                                    <p class="text-xs text-gray-400">沐稍</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 rounded-lg p-4 cursor-pointer hover:bg-opacity-70 transition-all song-item" data-song-id="4">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded overflow-hidden mr-3 bg-gray-700 flex items-center justify-center">
+                                    <i class="fa fa-music text-accent text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">如你</h4>
+                                    <p class="text-xs text-gray-400">语梦</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 rounded-lg p-4 cursor-pointer hover:bg-opacity-70 transition-all song-item" data-song-id="5">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded overflow-hidden mr-3 bg-gray-700 flex items-center justify-center">
+                                    <i class="fa fa-music text-accent text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">明月调</h4>
+                                    <p class="text-xs text-gray-400">加盐橙子水 /琥珀xisa</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 rounded-lg p-4 cursor-pointer hover:bg-opacity-70 transition-all song-item" data-song-id="6">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded overflow-hidden mr-3 bg-gray-700 flex items-center justify-center">
+                                    <i class="fa fa-music text-accent text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">落纸成霜</h4>
+                                    <p class="text-xs text-gray-400">湘言/童夕</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 rounded-lg p-4 cursor-pointer hover:bg-opacity-70 transition-all song-item" data-song-id="7">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded overflow-hidden mr-3 bg-gray-700 flex items-center justify-center">
+                                    <i class="fa fa-music text-accent text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">加油，相信明天会更好的</h4>
+                                    <p class="text-xs text-gray-400">江夏沐川</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 rounded-lg p-4 cursor-pointer hover:bg-opacity-70 transition-all song-item" data-song-id="8">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded overflow-hidden mr-3 bg-gray-700 flex items-center justify-center">
+                                    <i class="fa fa-music text-accent text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">夏时歌</h4>
+                                    <p class="text-xs text-gray-400">苏荷</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 rounded-lg p-4 cursor-pointer hover:bg-opacity-70 transition-all song-item" data-song-id="9">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded overflow-hidden mr-3 bg-gray-700 flex items-center justify-center">
+                                    <i class="fa fa-music text-accent text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">如梦令</h4>
+                                    <p class="text-xs text-gray-400">阿七</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 rounded-lg p-4 cursor-pointer hover:bg-opacity-70 transition-all song-item" data-song-id="10">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded overflow-hidden mr-3 bg-gray-700 flex items-center justify-center">
+                                    <i class="fa fa-music text-accent text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">江湖客栈</h4>
+                                    <p class="text-xs text-gray-400">江夏沐川</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 rounded-lg p-4 cursor-pointer hover:bg-opacity-70 transition-all song-item" data-song-id="11">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded overflow-hidden mr-3 bg-gray-700 flex items-center justify-center">
+                                    <i class="fa fa-music text-accent text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">姑苏谣</h4>
+                                    <p class="text-xs text-gray-400">妙哇兔子</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-900 bg-opacity-50 rounded-lg p-4 cursor-pointer hover:bg-opacity-70 transition-all song-item" data-song-id="12">
+                            <div class="flex items-center">
+                                <div class="w-12 h-12 rounded overflow-hidden mr-3 bg-gray-700 flex items-center justify-center">
+                                    <i class="fa fa-music text-accent text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold">一簪花信</h4>
+                                    <p class="text-xs text-gray-400">妙哇兔子</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 歌曲专区 -->
+            <div class="max-w-4xl mx-auto bg-gray-800 bg-opacity-50 rounded-xl overflow-hidden shadow-2xl">
+                <div class="p-6 md:p-8">
+                    <div class="text-center mb-8">
+                        <h3 class="text-2xl font-bold mb-2 text-accent">精选歌曲</h3>
+                        <p class="text-gray-400">点击歌曲卡片收听或查看歌词</p>
+                    </div>
+                    
+                    <!-- 歌曲列表 -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                        <!-- 古城谣 -->
+                        <div class="song-item bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg p-6 transition-all duration-300 hover:scale-105 cursor-pointer shadow-lg hover:shadow-accent/20" data-song-id="1">
+                            <div class="bg-gray-800 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                                <i class="fa fa-music text-4xl text-accent"></i>
+                            </div>
+                            <div class="text-center mb-4">
+                                <h4 class="text-lg font-bold text-white mb-1">古城谣</h4>
+                                <p class="text-sm text-gray-400">语梦</p>
+                            </div>
+                            <div class="flex justify-center items-center space-x-3">
+                                <a href="https://music.163.com/#/song?id=1336645930" target="_blank" class="px-4 py-2 bg-gray-700 hover:bg-accent hover:text-black rounded text-sm transition-colors">
+                                    <i class="fa fa-headphones mr-1"></i> 收听
+                                </a>
+                                <button class="play-song-btn px-4 py-2 bg-accent text-black rounded text-sm transition-transform hover:scale-105">
+                                    <i class="fa fa-play mr-1"></i> 播放
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 陌上桑 -->
+                        <div class="song-item bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg p-6 transition-all duration-300 hover:scale-105 cursor-pointer shadow-lg hover:shadow-accent/20" data-song-id="2">
+                            <div class="bg-gray-800 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                                <i class="fa fa-music text-4xl text-accent"></i>
+                            </div>
+                            <div class="text-center mb-4">
+                                <h4 class="text-lg font-bold text-white mb-1">陌上桑</h4>
+                                <p class="text-sm text-gray-400">沐稍</p>
+                            </div>
+                            <div class="flex justify-center items-center space-x-3">
+                                <a href="https://music.163.com/#/song?id=1339912760" target="_blank" class="px-4 py-2 bg-gray-700 hover:bg-accent hover:text-black rounded text-sm transition-colors">
+                                    <i class="fa fa-headphones mr-1"></i> 收听
+                                </a>
+                                <button class="play-song-btn px-4 py-2 bg-accent text-black rounded text-sm transition-transform hover:scale-105">
+                                    <i class="fa fa-play mr-1"></i> 播放
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- 八月秋 -->
+                        <div class="song-item bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg p-6 transition-all duration-300 hover:scale-105 cursor-pointer shadow-lg hover:shadow-accent/20" data-song-id="3">
+                            <div class="bg-gray-800 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
+                                <i class="fa fa-music text-4xl text-accent"></i>
+                            </div>
+                            <div class="text-center mb-4">
+                                <h4 class="text-lg font-bold text-white mb-1">八月秋</h4>
+                                <p class="text-sm text-gray-400">沐稍</p>
+                            </div>
+                            <div class="flex justify-center items-center space-x-3">
+                                <a href="https://music.163.com/#/song?id=1987019095" target="_blank" class="px-4 py-2 bg-gray-700 hover:bg-accent hover:text-black rounded text-sm transition-colors">
+                                    <i class="fa fa-headphones mr-1"></i> 收听
+                                </a>
+                                <button class="play-song-btn px-4 py-2 bg-accent text-black rounded text-sm transition-transform hover:scale-105">
+                                    <i class="fa fa-play mr-1"></i> 播放
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 歌词展示 -->
+                    <div class="bg-gradient-to-br from-gray-900 to-gray-800 rounded-xl p-6 shadow-lg relative overflow-hidden" style="height: 380px;">
+                        <div class="text-center mb-6">
+                            <h3 id="current-song-title" class="text-2xl font-bold text-accent mb-1">古城谣</h3>
+                            <p id="current-song-artist" class="text-gray-400">语梦</p>
+                        </div>
+                        <div class="lyrics-scroll-wrapper" style="height: calc(100% - 70px); overflow: hidden;">
+                            <div class="lyrics text-center transition-transform duration-300 ease-in-out space-y-4 text-lg" id="lyrics-container">
+                    <style>
+                        .lyric-line {
+                            transition: all 0.3s ease;
+                            opacity: 0.6;
+                            color: #cccccc;
+                        }
+                        .lyric-active {
+                            opacity: 1;
+                            color: #ffffff;
+                            transform: scale(1.05);
+                            font-weight: 600;
+                        }
+                        .lyric-inactive {
+                            opacity: 0.6;
+                            color: #cccccc;
+                            transform: scale(1);
+                            font-weight: normal;
+                        }
+                    </style>
+                                <!-- 歌词将通过JavaScript动态加载 -->
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 歌曲导航已移除 -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 电子书籍专区 -->
+    <section id="books" class="min-h-screen py-20 relative bg-gradient-to-b from-black to-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4 text-accent">电子书籍</h2>
+                <div class="w-24 h-1 bg-secondary mx-auto"></div>
+                <p class="mt-6 text-gray-400 max-w-2xl mx-auto">
+                    探索莫攸白的文学世界，感受文字与音乐的交织之美
+                </p>
+            </div>
+
+            <!-- 书籍网格 - 每排5本 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-7xl mx-auto">
+                <!-- 书籍 1 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://yuedu.163.com/source/24ceb1a2d8d14d99aa63a52d587115e7_4" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">缓缓蒹葭</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 2 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://caiwei.yuedu.163.com/source/bccda4ccea3e4841aba2879521ff17cb_4" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">属于你的灵魂香</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 3 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://caiwei.yuedu.163.com/source/d732f69761aa485e905f03aef772b47e_4" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">倾许你一世醉音欢</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 4 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://read.douban.com/column/7692203/?dcs=douban-search" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">寄素帛予你</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 5 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://www.amazon.com/dp/B0F1YRBCHG" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">桃梨叩年华</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 6 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://www.amazon.com/dp/B0F1ZCVF38" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">芳华沉沉叩心门</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 7 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://www.amazon.com/dp/B0F2TLBBPC" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">我歌锦年，你吟良辰</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 8 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://www.amazon.com/dp/B0F2XGXB22" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">诗意断章: （2021年-2025年）</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 9 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://www.amazon.com/dp/B0F3DG93N2" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">有生之年必读的101本书（上部：20本）</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 10 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://www.amazon.co.uk/dp/B0F3TM5G1M" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">有生之年必读的101本书（中部:30本)</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 11 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://www.amazon.com/dp/B0F8GHTPWL" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">风云奇幻录</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 12 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://www.amazon.com/dp/B0F28CD13J" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">诗歌：桃梨叩年华: （中英）</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+
+                <!-- 书籍 13 -->
+                <div class="book-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://www.amazon.co.uk/dp/B0FD7YGJV8" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-book text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">惊世红妆：她在古代搞事业</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">阅读全文</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- 电子有声专辑专区 - 另起一行 -->
+    <section id="audio-albums" class="min-h-screen py-20 relative bg-gradient-to-b from-black to-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4 text-accent">电子有声专辑</h2>
+                <div class="w-24 h-1 bg-secondary mx-auto"></div>
+                <p class="mt-6 text-gray-400 max-w-2xl mx-auto">
+                    聆听莫攸白的有声作品，感受声音与文字的魅力
+                </p>
+            </div>
+
+            <!-- 专辑网格 - 每排3本 -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+                <!-- 专辑 1 -->
+                <div class="album-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://www.ximalaya.com/yinyue/69671842/" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-music text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">缓缓蒹葭</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">收听专辑</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- 专辑 2 -->
+                <div class="album-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://www.ximalaya.com/yinyue/69671842/" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-music text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">镜与花</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">收听专辑</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- 专辑 3 -->
+                <div class="album-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://music.163.com/radio?id=794016626" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-music text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">属于你的灵魂香</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">收听专辑</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                
+                <!-- 专辑 4 -->
+                <div class="album-card bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg overflow-hidden shadow-xl transition-all duration-300 hover:transform hover:scale-105 hover:shadow-accent/20">
+                    <a href="https://music.163.com/radio?id=794016626" target="_blank" class="block">
+                        <div class="h-48 bg-gray-800 flex items-center justify-center p-4">
+                            <div class="w-full h-full bg-gradient-to-br from-primary/30 to-secondary/30 rounded flex items-center justify-center">
+                                <i class="fa fa-music text-4xl text-accent"></i>
+                            </div>
+                        </div>
+                        <div class="p-4 text-center">
+                            <h3 class="text-base font-bold text-accent mb-2">倾许你一世醉音欢</h3>
+                            <div class="flex justify-center mt-2">
+                                <span class="inline-block px-3 py-1 bg-gray-700 rounded-full text-xs">收听专辑</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 艺人介绍区 -->
+    <section id="about" class="min-h-screen py-20 relative guzheng-bg">
+        <div class="absolute inset-0 bg-black bg-opacity-70"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4 text-accent">关于莫攸白</h2>
+                <div class="w-24 h-1 bg-secondary mx-auto"></div>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-12 items-center">
+                <!-- 艺人照片 -->
+                <div class="w-full lg:w-1/3">
+                    <div class="relative">
+                        <img src="https://p9-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/code_assistant/f3fbc933e29844af87c9076ffa6ee6d1~tplv-a9rns2rl98-image.image?rcl=20250930013211F8CC8B3661652BCD8ED6&amp;rk3s=8e244e95&amp;rrcfp=e75484ac&amp;x-expires=1759771931&amp;x-signature=AsObxm2J7yavDmRc%2BAn94mBI8eM%3D" alt="莫攸白" class="w-full rounded-lg shadow-xl">
+                        <div class="absolute -bottom-4 -right-4 bg-accent text-black p-4 rounded-lg shadow-lg">
+                            <p class="text-xl font-bold">音乐制作人</p>
+                            <p class="text-sm">作词人 / 作家/诗人</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 艺人介绍 -->
+                <div class="w-full lg:w-2/3">
+                    <h3 class="text-2xl font-bold mb-6 text-accent">音乐旅程</h3>
+                    <p class="text-gray-300 mb-6 leading-relaxed">
+                        从初中起便对文字与艺术有着浓厚的兴趣，这份热爱如同种子在心中生根发芽，随着岁月的流逝逐渐茁壮成长。其中，起初想要走文学道路不缺乏对生活的迷茫，与家人的不理解，被家人认为不学无术，现在慢慢变为家人们的支持，在回顾时一路感慨，想要做好一件事没那么简单，不缺乏巧妇难为无米之炊困难的时候，而且特别是当你的付出不成正比，没有获得相对应的金钱的回报，都咬牙坚持下去，当初坚持不下去时，就做一份工，选择业余坚持写，一方面保证自己的生活，一方面由于热爱继续为爱发电，而日渐坚持下去，由不会写的门外之汉到现在的刚刚起步探索之门，写作是一个人的孤独狂欢，能坚持下去的都是了不起的。直到现在五湖四海的朋友一起说要实现自己的理想的人，已经变得寥寥了。也不知道是不是有幸运的成分在的，庆幸自己还能坚持。
+                    </p>
+
+                    <p class="text-gray-300 mb-8 leading-relaxed">
+                        在歌词创作方面，我以莫攸白笔名创作了《古城谣》《陌上桑》《姑苏美人》《风月记》《故旧》《姑苏谣》《遗爱手札》等作品，这些歌词或婉转悠扬，或豪放洒脱，为众多音乐作品增添了灵魂与韵味。以双银杏笔名创作的《青灯》《语镜》《放鹤亭》《送嫁》等歌词作品，也在音乐领域受到了广泛关注和喜爱。
+                    </p>
+                    
+                    <!-- 艺术风格 -->
+                    <div class="mb-8">
+                        <h4 class="text-xl font-bold mb-4 text-white">艺术风格</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
+                                <div class="flex items-center mb-2">
+                                    <i class="fa fa-music text-accent mr-2"></i>
+                                    <h5 class="font-bold">传统融合</h5>
+                                </div>
+                                <p class="text-sm text-gray-400">将古筝、琵琶等传统乐器与现代电子音乐结合</p>
+                            </div>
+                            <div class="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
+                                <div class="flex items-center mb-2">
+                                    <i class="fa fa-book text-accent mr-2"></i>
+                                    <h5 class="font-bold">诗词意境</h5>
+                                </div>
+                                <p class="text-sm text-gray-400">以古典诗词为灵感，营造东方美学意境</p>
+                            </div>
+                            <div class="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
+                                <div class="flex items-center mb-2">
+                                    <i class="fa fa-globe text-accent mr-2"></i>
+                                    <h5 class="font-bold">世界音乐</h5>
+                                </div>
+                                <p class="text-sm text-gray-400">融合世界音乐元素，创造跨文化的音乐体验</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 社交媒体链接 -->
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent hover:text-black transition-all">
+                            <i class="fa fa-weibo"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent hover:text-black transition-all">
+                            <i class="fa fa-wechat"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent hover:text-black transition-all">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center hover:bg-accent hover:text-black transition-all">
+                            <i class="fa fa-youtube-play"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    
+
+
+    
+
+    <!-- 网易云音乐播放器 - 放在页面底部可访问的位置 -->
+    <div id="netease-player-container" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        <iframe id="netease-player" frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86"></iframe>
+    </div>
+
+    <!-- 联系区 -->
+    <section id="contact" class="min-h-screen py-20 relative player-bg">
+        <div class="absolute inset-0 bg-black bg-opacity-70"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-5xl font-bold mb-4 text-accent">联系我们</h2>
+                <div class="w-24 h-1 bg-secondary mx-auto"></div>
+                <p class="mt-6 text-gray-400 max-w-2xl mx-auto">
+                    无论您是媒体合作、演出邀约，还是粉丝留言，都可以通过以下方式联系我们。
+                </p>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-12">
+                <!-- 联系信息 -->
+                <div class="w-full lg:w-1/2">
+                    <div class="bg-gray-800 bg-opacity-50 p-8 rounded-lg h-full">
+                        <h3 class="text-2xl font-bold mb-6 text-white">联系方式</h3>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-black mr-4 flex-shrink-0">
+                                    <i class="fa fa-envelope"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-1">邮箱</h4>
+                                    <p class="text-gray-400">新浪@moyoubai@sina.cn</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-black mr-4 flex-shrink-0">
+                                    <i class="fa fa-phone"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-1">微信号</h4>
+                                    <p class="text-gray-400">SU19942015</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-black mr-4 flex-shrink-0">
+                                    <i class="fa fa-qq"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-1">QQ群</h4>
+                                    <p class="text-gray-400">莫攸白的小窝：877041800（更新文学、电台等最新状态）</p>
+                                    <p class="text-gray-400">装扮QQ群：815338021（主要更新微信红包封面、QQ装扮、微信表情包等最新动态）</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-black mr-4 flex-shrink-0">
+                                    <i class="fa fa-map-marker"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-1">地址</h4>
+                                    <p class="text-gray-400">中国湖北省</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start">
+                                <div class="w-12 h-12 rounded-full bg-accent flex items-center justify-center text-black mr-4 flex-shrink-0">
+                                    <i class="fa fa-weibo"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-1">官方微博</h4>
+                                    <p class="text-gray-400">@莫攸白</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 订阅区域 -->
+                        <div class="mt-10">
+                            <h4 class="font-bold mb-4">订阅最新动态</h4>
+                            <div class="flex">
+                                <input type="email" placeholder="您的邮箱地址" class="bg-gray-900 bg-opacity-70 border border-gray-700 rounded-l-lg px-4 py-2 w-full focus:outline-none focus:border-accent">
+                                <button class="bg-accent text-black px-4 py-2 rounded-r-lg hover:bg-opacity-80 transition-all">订阅</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 留言表单 -->
+                <div class="w-full lg:w-1/2">
+                    <div class="bg-gray-800 bg-opacity-50 p-8 rounded-lg">
+                        <h3 class="text-2xl font-bold mb-6 text-white">给我留言</h3>
+                        
+                        <form id="contact-form">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                <div>
+                                    <label for="name" class="block text-gray-400 mb-2">姓名</label>
+                                    <input type="text" id="name" class="bg-gray-900 bg-opacity-70 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:border-accent">
+                                </div>
+                                <div>
+                                    <label for="email" class="block text-gray-400 mb-2">邮箱</label>
+                                    <input type="email" id="email" class="bg-gray-900 bg-opacity-70 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:border-accent">
+                                </div>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label for="subject" class="block text-gray-400 mb-2">主题</label>
+                                <input type="text" id="subject" class="bg-gray-900 bg-opacity-70 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:border-accent">
+                            </div>
+                            
+                            <div class="mb-6">
+                                <label for="message" class="block text-gray-400 mb-2">留言内容</label>
+                                <textarea id="message" rows="5" class="bg-gray-900 bg-opacity-70 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:border-accent"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-secondary hover:bg-opacity-80 text-white py-3 rounded-lg transition-all transform hover:scale-105">
+                                发送留言
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="bg-black py-12 border-t border-gray-800">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-6 md:mb-0">
+                    <a href="#" class="text-2xl font-bold text-accent">莫攸白</a>
+                    <p class="text-gray-500 mt-2">融合传统与现代的独立音乐人</p>
+                </div>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-accent transition-colors">
+                        <i class="fa fa-weibo text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-accent transition-colors">
+                        <i class="fa fa-wechat text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-accent transition-colors">
+                        <i class="fa fa-instagram text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-accent transition-colors">
+                        <i class="fa fa-youtube-play text-xl"></i>
+                    </a>
+                    <a href="#" class="text-gray-500 hover:text-accent transition-colors">
+                        <i class="fa fa-spotify text-xl"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm mb-4 md:mb-0">© 2025 莫攸白音乐工作室. 保留所有权利.</p>
+                
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-500 hover:text-accent text-sm transition-colors">隐私政策</a>
+                    <a href="#" class="text-gray-500 hover:text-accent text-sm transition-colors">使用条款</a>
+                    <a href="#" class="text-gray-500 hover:text-accent text-sm transition-colors">网站地图</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 返回顶部按钮 -->
+    <button id="back-to-top" class="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-accent text-black flex items-center justify-center shadow-lg opacity-0 invisible transition-all z-50">
+        <i class="fa fa-chevron-up"></i>
+    </button>
+    
+    <!-- 管理员登录按钮 -->
+    <button id="admin-login-btn" class="fixed bottom-8 left-8 w-12 h-12 rounded-full bg-gray-800 text-white flex items-center justify-center shadow-lg hover:bg-gray-700 transition-all z-50">
+        <i class="fa fa-lock"></i>
+    </button>
+
+    <!-- 管理员登录模态框 -->
+    <div id="admin-login-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-900 p-8 rounded-lg max-w-md w-full mx-4 border border-gray-700 shadow-xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-white">管理员登录</h3>
+                <button id="close-login-modal" class="text-gray-500 hover:text-white">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <form id="admin-login-form">
+                <div class="mb-6">
+                    <label for="admin-username" class="block text-gray-400 mb-2">用户名</label>
+                    <input type="text" id="admin-username" class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:border-accent" required>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="admin-password" class="block text-gray-400 mb-2">密码</label>
+                    <input type="password" id="admin-password" class="bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 w-full focus:outline-none focus:border-accent" required>
+                </div>
+                
+                <div id="login-error" class="mb-6 text-red-500 text-center hidden">
+                    用户名或密码错误，请重试！
+                </div>
+                
+                <button type="submit" class="w-full bg-accent hover:bg-opacity-80 text-black py-3 rounded-lg transition-all transform hover:scale-105">
+                    登录
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 留言管理界面 -->
+    <div id="message-management" class="fixed inset-0 bg-black bg-opacity-95 z-50 hidden">
+        <div class="h-full flex flex-col">
+            <!-- 顶部导航 -->
+            <div class="bg-gray-900 border-b border-gray-800 p-4 flex justify-between items-center">
+                <h3 class="text-2xl font-bold text-white">留言管理</h3>
+                <div class="flex space-x-4">
+                    <button id="refresh-messages" class="text-gray-400 hover:text-white">
+                        <i class="fa fa-refresh text-xl"></i>
+                    </button>
+                    <button id="logout-admin" class="text-gray-400 hover:text-white">
+                        <i class="fa fa-sign-out text-xl"></i>
+                    </button>
+                    <button id="close-management" class="text-gray-400 hover:text-white">
+                        <i class="fa fa-times text-xl"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 留言列表 -->
+            <div class="flex-1 overflow-y-auto p-4">
+                <div id="messages-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- 留言卡片将通过JavaScript动态生成 -->
+                </div>
+                
+                <!-- 空状态 -->
+                <div id="no-messages" class="flex flex-col items-center justify-center h-full text-center">
+                    <i class="fa fa-envelope-o text-5xl text-gray-700 mb-4"></i>
+                    <p class="text-gray-500 text-xl">暂无留言</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 留言详情模态框 -->
+    <div id="message-detail-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-900 p-8 rounded-lg max-w-2xl w-full mx-4 border border-gray-700 shadow-xl">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold text-white">留言详情</h3>
+                <button id="close-detail-modal" class="text-gray-500 hover:text-white">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            
+            <div id="message-detail-content" class="mb-6">
+                <!-- 留言详情将通过JavaScript动态生成 -->
+            </div>
+            
+            <div class="flex justify-end space-x-4">
+                <button id="delete-message" class="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg transition-all">
+                    <i class="fa fa-trash mr-2"></i>删除
+                </button>
+                <button id="close-detail" class="bg-gray-700 hover:bg-gray-600 text-white px-6 py-2 rounded-lg transition-all">
+                    关闭
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- JavaScript -->
+    <script>
+        // 提前声明全局播放控制变量，确保在任何函数调用前初始化
+        let songCurrentTime = 0;
+        let isSongPlaying = false;
+        let songPlayInterval;
+        
+        // 导航栏滚动效果
+        const navbar = document.getElementById('navbar');
+        const backToTop = document.getElementById('back-to-top');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) {
+                navbar.classList.add('py-2');
+                navbar.classList.remove('py-4');
+                backToTop.classList.remove('opacity-0', 'invisible');
+                backToTop.classList.add('opacity-100', 'visible');
+            } else {
+                navbar.classList.add('py-4');
+                navbar.classList.remove('py-2');
+                backToTop.classList.add('opacity-0', 'invisible');
+                backToTop.classList.remove('opacity-100', 'visible');
+            }
+        });
+        
+        // 移动端菜单
+        const menuToggle = document.getElementById('menu-toggle');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // 关闭移动端菜单
+                    if (!mobileMenu.classList.contains('hidden')) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                }
+            });
+        });
+        
+        // 返回顶部
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+        
+        // 歌词页面功能
+        const songItems = document.querySelectorAll('.song-item');
+        const prevSongButton = document.getElementById('prev-song');
+        const nextSongButton = document.getElementById('next-song');
+        const currentSongTitle = document.getElementById('current-song-title');
+        const currentSongArtist = document.getElementById('current-song-artist');
+        const lyricsContainer = document.getElementById('lyrics-container');
+        const lyricsScrollWrapper = document.querySelector('.lyrics-scroll-wrapper');
+        
+        // 歌曲数据
+        const songs = [
+            {
+                id: 1,
+                title: '古城谣',
+                artist: '语梦',
+                duration: 240,
+                lyrics: [
+                    { time: 0, text: '作词 : 青舟/莫攸白' },
+                    { time: 2, text: '作曲 : 语梦' },
+                    { time: 4, text: '策划/作曲/演唱：语梦' },
+                    { time: 6, text: '编曲：青舟' },
+                    { time: 8, text: '二胡演奏：辰小弦' },
+                    { time: 10, text: '乐器混音：语梦' },
+                    { time: 12, text: '人声混音：Wuli包子' },
+                    { time: 14, text: '题字：云海尘清' },
+                    { time: 16, text: '海报：艾米' },
+                    { time: 18, text: 'PV：十梦' },
+                    { time: 20, text: '雾重门 冷霜身' },
+                    { time: 23, text: '一次回眸误等' },
+                    { time: 26, text: '怨丁香倦了秋冷' },
+                    { time: 29, text: '老城墙 枯树藤' },
+                    { time: 32, text: '你眼神 如刀刃' },
+                    { time: 35, text: '折断了谁魂' },
+                    { time: 38, text: '回忆又生根' },
+                    { time: 41, text: '恨雨落无痕' },
+                    { time: 44, text: '过荒草丛生' },
+                    { time: 47, text: '缘分让我们' },
+                    { time: 50, text: '在人世浮沉' },
+                    { time: 53, text: '一路泪狂奔滚滚红尘' },
+                    { time: 56, text: '终得一句薄嗔' },
+                    { time: 59, text: '可笑命途再难也不容转身' },
+                    { time: 62, text: '再经过古城写下缘分' },
+                    { time: 65, text: '惹情债又几本' },
+                    { time: 68, text: '却无人陪我演完这场剧本' },
+                    { time: 71, text: '老城墙 枯树藤' },
+                    { time: 74, text: '你眼神 如刀刃' },
+                    { time: 77, text: '折断了谁魂' },
+                    { time: 80, text: '回忆又生根' },
+                    { time: 83, text: '恨雨落无痕' },
+                    { time: 86, text: '过荒草丛生' },
+                    { time: 89, text: '缘分让我们' },
+                    { time: 92, text: '在人世浮沉' },
+                    { time: 95, text: '一路泪狂奔' },
+                    { time: 98, text: '滚滚红尘' },
+                    { time: 101, text: '终得一句薄嗔' },
+                    { time: 104, text: '可笑命途再难也不容转身' },
+                    { time: 107, text: '再经过古城写下缘分' },
+                    { time: 110, text: '惹情债又几本' },
+                    { time: 113, text: '却无人陪我演完这场剧本' },
+                    { time: 116, text: '一路泪狂奔' },
+                    { time: 119, text: '滚滚红尘' },
+                    { time: 122, text: '终得一句薄嗔' },
+                    { time: 125, text: '可笑命途再难也不容转身' },
+                    { time: 128, text: '再经过古城几次枯等' },
+                    { time: 131, text: '却始终没天分' },
+                    { time: 134, text: '让我们随着缘分落地生根' },
+                    { time: 137, text: '再经过古城我却枯等' },
+                    { time: 140, text: '却始终没天分' },
+                    { time: 143, text: '让你我随着红尘驻营扎根' }
+                ]
+            },
+            {
+                id: 2,
+                title: '陌上桑',
+                artist: '沐稍',
+                duration: 280,
+                lyrics: [
+                    { time: 0, text: '词：莫攸白' },
+                    { time: 2, text: '曲：沐稍' },
+                    { time: 4, text: '编曲：沐稍' },
+                    { time: 6, text: '和声编写：沐稍' },
+                    { time: 8, text: '策划：心弦' },
+                    { time: 10, text: '和声：阮言' },
+                    { time: 12, text: '后期：影棠' },
+                    { time: 14, text: '题字：闻人' },
+                    { time: 16, text: '美工：心弦' },
+                    { time: 20, text: '新雨春候 醒茶酒' },
+                    { time: 24, text: '故人造访 落坐喧' },
+                    { time: 28, text: '年岁一去叹时光' },
+                    { time: 32, text: '去而再也不可复返' },
+                    { time: 36, text: '黄昏烹茶 过夜半' },
+                    { time: 40, text: '听雨穿林 打竹叶声' },
+                    { time: 44, text: '守着烟火繁 花事渐向晚' },
+                    { time: 48, text: '一曲新调未曾谱写完' },
+                    { time: 52, text: '新茶采摘' },
+                    { time: 54, text: '陌上桑女又忙着挼晒' },
+                    { time: 58, text: '一湖春水 花绽开' },
+                    { time: 62, text: '雁子会新飞回来' },
+                    { time: 66, text: '茶色上新 结亲友' },
+                    { time: 70, text: '宾客相拥 道寒喧' },
+                    { time: 74, text: '使君从南来' },
+                    { time: 76, text: '五马立踟蹰' },
+                    { time: 78, text: '使君遣吏往' },
+                    { time: 80, text: '问是谁家姝' },
+                    { time: 82, text: '秦氏有好女' },
+                    { time: 84, text: '自名为罗敷' },
+                    { time: 86, text: '罗敷年几何' },
+                    { time: 88, text: '二十尚不足' },
+                    { time: 90, text: '十五颇有余' },
+                    { time: 92, text: '使君谢罗敷' },
+                    { time: 94, text: '宁可共载不' },
+                    { time: 96, text: '罗敷前置辞' },
+                    { time: 98, text: '使君一何愚' },
+                    { time: 100, text: '使君自有妇' },
+                    { time: 102, text: '罗敷自有夫' },
+                    { time: 104, text: '东方千余骑' },
+                    { time: 106, text: '夫婿居上头' },
+                    { time: 108, text: '何用识夫婿' },
+                    { time: 110, text: '白马鞍系马尾' },
+                    { time: 112, text: '腰中鹿卢剑' },
+                    { time: 114, text: '可值千万余钱' },
+                    { time: 116, text: '十五府小史' },
+                    { time: 118, text: '二十朝大夫' },
+                    { time: 120, text: '三十侍中郎' },
+                    { time: 122, text: '四十专城居' },
+                    { time: 124, text: '为人洁白皙' },
+                    { time: 126, text: '鬑�颇有须' },
+                    { time: 128, text: '盈盈公府步' },
+                    { time: 130, text: '冉冉府中趋' },
+                    { time: 132, text: '坐吏前致辞' },
+                    { time: 134, text: '但坐观罗敷' }
+                ]
+            },
+            {
+                id: 3,
+                title: '八月秋',
+                artist: '沐稍',
+                duration: 300,
+                lyrics: [
+                    { time: 0, text: '作词 : 莫攸白' },
+                    { time: 2, text: '作曲 : 沐稍' },
+                    { time: 4, text: '编曲 : 青舟' },
+                    { time: 6, text: '演唱 : 沐稍' },
+                    { time: 10, text: '八月秋 风微凉' },
+                    { time: 14, text: '梧桐叶落满阶前' },
+                    { time: 18, text: '一壶酒 独酌饮' },
+                    { time: 22, text: '相思难寄雁南飞' },
+                    { time: 26, text: '月如钩 照无眠' },
+                    { time: 30, text: '往事如烟浮眼前' },
+                    { time: 34, text: '梦难成 愁难遣' },
+                    { time: 38, text: '举杯邀月共缠绵' },
+                    { time: 42, text: '秋风起 叶纷飞' },
+                    { time: 46, text: '相思之人寄向谁边' },
+                    { time: 50, text: '雁字回时 月满西楼' },
+                    { time: 54, text: '雁字回时 月满西楼' },
+                    { time: 58, text: '花自飘零水自流' },
+                    { time: 62, text: '一种相思两处闲愁' },
+                    { time: 66, text: '此情无计可消除' },
+                    { time: 70, text: '才下眉头 却上心头' },
+                    { time: 74, text: '才下眉头 却上心头' },
+                    { time: 78, text: '八月秋 风微凉' },
+                    { time: 82, text: '梧桐叶落满阶前' },
+                    { time: 86, text: '一壶酒 独酌饮' },
+                    { time: 90, text: '相思难寄雁南飞' },
+                    { time: 94, text: '月如钩 照无眠' },
+                    { time: 98, text: '往事事如烟浮眼前' },
+                    { time: 102, text: '梦难成 愁难遣' },
+                    { time: 106, text: '举杯邀月共缠绵' },
+                    { time: 110, text: '秋风起 叶纷飞' },
+                    { time: 114, text: '相思无处寄向谁边' },
+                    { time: 118, text: '雁字回时 月满西楼' },
+                    { time: 122, text: '雁字回时 月满西楼' },
+                    { time: 126, text: '花自飘零水自流' },
+                    { time: 130, text: '一种相思两处两处闲愁' },
+                    { time: 134, text: '此情无计可消除' },
+                    { time: 138, text: '才下眉头 却上心头' },
+                    { time: 142, text: '才下眉头 却上心头' }
+                ]
+            },
+            {
+                id: 4,
+                title: '长安月',
+                artist: '莫攸白',
+                lyrics: [
+                    '作词 : 莫攸白',
+                    '作曲 : 莫攸白',
+                    '编曲 : 莫攸白',
+                    '演唱 : 莫攸白',
+                    '长安月 照千年',
+                    '古都夜色里梦魂牵',
+                    '钟鼓楼上 钟声远',
+                    '大雁塔前 香火烟',
+                    '朱雀街 人如织',
+                    '曲江池畔 柳丝绵',
+                    '芙蓉园里 花争艳',
+                    '大明宫前 月正圆',
+                    '长安月 照无眠',
+                    '多少故事 藏心间',
+                    '多少英雄 成过往',
+                    '多少诗篇 留世间',
+                    '长安月 照千年',
+                    '古都长安 梦魂牵',
+                    '钟鼓楼上 钟声远',
+                    '大雁塔前 香火烟',
+                    '朱雀街 人如织',
+                    '曲江池畔 柳丝绵',
+                    '芙蓉园里 花争艳',
+                    '大明宫前 月正圆',
+                    '长安月 照无眠',
+                    '多少故事 藏心间',
+                    '多少英雄 成过往',
+                    '多少诗篇 留世间',
+                    '长安月 照无眠',
+                    '多少故事 藏心间',
+                    '多少英雄 成过往',
+                    '多少诗篇 留世间'
+                ]
+            },
+            {
+                id: 5,
+                title: '丝路谣',
+                artist: '妙哇兔子',
+                lyrics: [
+                    '作词 : 莫攸白',
+                    '作曲 : 妙哇兔子',
+                    '编曲 : 青舟',
+                    '演唱 : 妙哇兔子',
+                    '丝绸路 万里长',
+                    '驼铃声声 向远方',
+                    '风沙漫 路茫茫',
+                    '商队西行 赴异邦',
+                    '阳关外 胡杨壮',
+                    '葡萄美酒 郁金香',
+                    '敦煌壁画 飞天舞',
+                    '楼兰美女 歌声扬',
+                    '丝路谣 谣未央',
+                    '东西文化 交流长',
+                    '张骞出使 通西域',
+                    '玄奘取经 历沧桑',
+                    '丝绸路 万里长',
+                    '驼铃声声 向远方',
+                    '风沙漫 路茫茫',
+                    '商队西行 赴异邦',
+                    '阳关外 胡杨壮',
+                    '葡萄美酒 郁金香',
+                    '敦煌壁画 飞天舞',
+                    '楼兰美女 歌声扬',
+                    '丝路谣 谣未央',
+                    '东西文化 交流长',
+                    '张骞出使 通西域',
+                    '玄奘取经 历沧桑',
+                    '丝路谣 谣未央',
+                    '一带一路 新篇章',
+                    '和平合作 共发展',
+                    '文明互鉴 谱华章'
+                ]
+            },
+            {
+                id: 6,
+                title: '水墨江南',
+                artist: '莫攸白',
+                lyrics: [
+                    '作词 : 莫攸白',
+                    '作曲 : 莫攸白',
+                    '编曲 : 莫攸白',
+                    '演唱 : 莫攸白',
+                    '水墨江南 烟雨蒙',
+                    '小桥流水 人家梦',
+                    '乌篷船 摇橹声',
+                    '杏花春雨 诗意浓',
+                    '油纸伞 旗袍红',
+                    '石板路上 脚步声',
+                    '秦淮河 月色溶',
+                    '画舫笙歌 醉意生',
+                    '水墨江南 诗意浓',
+                    '如诗如画 如梦境',
+                    '文人墨客 留佳作',
+                    '江南美景 古今同',
+                    '水墨江南 烟雨蒙',
+                    '小桥流水 人家梦',
+                    '乌篷船 摇橹声',
+                    '杏花春雨 诗意浓',
+                    '油纸伞 旗袍红',
+                    '石板路上 脚步声',
+                    '秦淮河 月色溶',
+                    '画舫笙歌 醉意生',
+                    '水墨江南 诗意浓',
+                    '如诗如画 如梦境',
+                    '文人墨客 留佳作',
+                    '江南美景 古今同'
+                ]
+            },
+            {
+                id: 7,
+                title: '清风辞',
+                artist: '莫攸白',
+                lyrics: [
+                    '作词 : 莫攸白',
+                    '作曲 : 莫攸白',
+                    '编曲 : 莫攸白',
+                    '演唱 : 莫攸白',
+                    '清风徐来 水波不兴',
+                    '明月当空 照我心',
+                    '独坐幽篁 弹琴长啸',
+                    '深林人不知 明月来相照',
+                    '清风徐来 吹散愁绪',
+                    '明月当空 照我心',
+                    '举杯邀月 对影三人',
+                    '我歌月徘徊 我舞影零乱',
+                    '清风辞 辞清风',
+                    '人生得意须尽欢',
+                    '莫使金樽空对月',
+                    '天生我材必有用',
+                    '千金散尽还复来',
+                    '清风徐来 水波不兴',
+                    '明月当空 照我心',
+                    '独坐幽篁 弹琴长啸',
+                    '深林人不知 明月来相照',
+                    '清风辞 辞清风',
+                    '人生得意须尽欢',
+                    '莫使金樽空对月',
+                    '天生我材必有用',
+                    '千金散尽还复来',
+                    '清风辞 辞清风',
+                    '人生得意须尽欢',
+                    '莫使金樽空对月',
+                    '天生我材必有用',
+                    '千金散尽还复来'
+                ]
+            },
+            {
+                id: 8,
+                title: '明月引',
+                artist: '莫攸白',
+                lyrics: [
+                    '作词 : 莫攸白',
+                    '作曲 : 莫攸白',
+                    '编曲 : 莫攸白',
+                    '演唱 : 莫攸白',
+                    '明月几时有 把酒问青天',
+                    '不知天上宫阙 今夕是何年',
+                    '我欲乘风归去 又恐琼楼玉宇',
+                    '高处不胜寒 起舞弄清影',
+                    '何似在人间 转朱阁',
+                    '低绮户 照无眠',
+                    '不应有恨 何事长向别时圆',
+                    '人有悲欢离合 月有阴晴圆缺',
+                    '此事古难全 但愿人长久',
+                    '千里共婵娟',
+                    '明月几时有 把酒问青天',
+                    '不知天上宫阙 今夕是何年',
+                    '我欲乘风归去 又恐琼楼玉宇',
+                    '高处不胜寒 起舞弄清影',
+                    '何似在人间 转朱阁',
+                    '低绮户 照无眠',
+                    '不应有恨 何事长向别时圆',
+                    '人有悲欢离合 月有阴晴圆缺',
+                    '此事古难全 但愿人长久',
+                    '千里共婵娟'
+                ]
+            },
+            {
+                id: 9,
+                title: '山水吟',
+                artist: '莫攸白',
+                lyrics: [
+                    '作词 : 莫攸白',
+                    '作曲 : 莫攸白',
+                    '编曲 : 莫攸白',
+                    '演唱 : 莫攸白',
+                    '山青青 水潺潺',
+                    '山水之间 有桃源',
+                    '飞鸟鸣 花草香',
+                    '人与自然 共和谐',
+                    '登高山 望远方',
+                    '云海茫茫 心宽广',
+                    '临碧水 思故乡',
+                    '乡愁淡淡 意悠长',
+                    '山水吟 吟山水',
+                    '山水如画 人陶醉',
+                    '智者乐水 仁者乐山',
+                    '山水情怀 古今同',
+                    '山青青 水潺潺',
+                    '山水之间 有桃源',
+                    '飞鸟鸣 花草香',
+                    '人与自然 共和谐',
+                    '登高山 望远方',
+                    '云海茫茫 心宽广',
+                    '临碧水 思故乡',
+                    '乡愁淡淡 意悠长',
+                    '山水吟 吟山水',
+                    '山水如画 人陶醉',
+                    '智者乐水 仁者乐山',
+                    '山水情怀 古今同'
+                ]
+            },
+            {
+                id: 10,
+                title: '江湖笑',
+                artist: '莫攸白',
+                lyrics: [
+                    '作词 : 莫攸白',
+                    '作曲 : 莫攸白',
+                    '编曲 : 莫攸白',
+                    '演唱 : 莫攸白',
+                    '江湖笑 恩怨了',
+                    '人过招 笑藏刀',
+                    '红尘笑 笑寂寥',
+                    '心太高 到不了',
+                    '明月照 路迢迢',
+                    '人会老 心不老',
+                    '爱不到 放不掉',
+                    '忘不了 你的好',
+                    '看似花非花 雾非雾',
+                    '滔滔江水留不住',
+                    '一身豪情壮志 铁傲骨',
+                    '原来英雄是孤独',
+                    '江湖笑 爱逍遥',
+                    '琴或萧 酒来倒',
+                    '仰天笑 全忘了',
+                    '潇洒如风 轻飘飘',
+                    '江湖笑 恩怨了',
+                    '人过招 笑藏刀',
+                    '红尘笑 笑寂寥',
+                    '心太高 到不了',
+                    '明月照 路迢迢',
+                    '人会老 心不老',
+                    '爱不到 放不掉',
+                    '忘不了 你的好',
+                    '看似花非花 雾非雾',
+                    '滔滔江水留不住',
+                    '一身豪情壮志 铁傲骨',
+                    '原来英雄是孤独',
+                    '江湖笑 爱逍遥',
+                    '琴或萧 酒来倒',
+                    '仰天笑 全忘了',
+                    '潇洒如风 轻飘飘'
+                ]
+            },
+            {
+                id: 11,
+                title: '姑苏谣',
+                artist: '妙哇兔子',
+                lyrics: [
+                    '作词 : 莫攸白',
+                    '作曲 : 妙哇兔子',
+                    '编曲 : 青舟',
+                    '演唱 : 妙哇兔子',
+                    '姑苏城外寒山寺',
+                    '夜半钟声到客船',
+                    '枫桥夜泊 愁难眠',
+                    '月落乌啼霜满天',
+                    '江枫渔火对愁眠',
+                    '姑苏城 梦魂牵',
+                    '烟雨江南 诗意浓',
+                    '太湖碧波 映蓝天',
+                    '拙政园内 花争艳',
+                    '狮子林里 假山连',
+                    '平江路上 人如织',
+                    '山塘街 灯火连',
+                    '苏州评弹 韵味长',
+                    '昆曲悠扬 情意绵',
+                    '姑苏城 美如画',
+                    '人间天堂 不虚传',
+                    '吴侬软语 耳畔绕',
+                    '江南水乡 梦中还',
+                    '姑苏城外寒山寺',
+                    '夜半钟声到客船',
+                    '枫桥夜泊 愁难眠',
+                    '月落乌啼霜满天',
+                    '江枫渔火对愁眠',
+                    '姑苏城 梦魂牵',
+                    '烟雨江南 诗意浓',
+                    '太湖碧波 映蓝天',
+                    '拙政园内 花争艳',
+                    '狮子林里 假山连',
+                    '平江路上 人如织',
+                    '山塘街 灯火连',
+                    '苏州评弹 韵味长',
+                    '昆曲悠扬 情意绵',
+                    '姑苏城 美如画',
+                    '人间天堂 不虚传',
+                    '吴侬软语 耳畔绕',
+                    '江南水乡 梦中还'
+                ]
+            },
+            {
+                id: 12,
+                title: '一簪花信',
+                artist: '妙哇兔子',
+                lyrics: [
+                    '作词 : 莫攸白',
+                    '作曲 : 妙哇兔子',
+                    '编曲 : 青舟',
+                    '演唱 : 妙哇兔子',
+                    '春风送暖 花开枝头',
+                    '一簪花信 寄相思',
+                    '细雨如丝 润万物',
+                    '柔情蜜意 心中留',
+                    '花开时节 遇见你',
+                    '嫣然一笑 醉心头',
+                    '岁月静好 与君伴',
+                    '琴瑟和鸣 意悠悠',
+                    '一簪花信 情万千',
+                    '相思缕缕 系心间',
+                    '花开花落 年复年',
+                    '此情不渝 永不变',
+                    '春风送暖 花开枝头',
+                    '一簪花信 寄相思',
+                    '细雨如丝 润万物',
+                    '柔情蜜意 心中留',
+                    '花开时节 遇见你',
+                    '嫣然一笑 醉心头',
+                    '岁月静好 与君伴',
+                    '琴瑟和鸣 意悠悠',
+                    '一簪花信 情万千',
+                    '相思缕缕 系心间',
+                    '花开花落 年复年',
+                    '此情不渝 永不变',
+                    '一簪花信 情万千',
+                    '相思缕缕 系心间',
+                    '花开花落 年复年',
+                    '此情不渝 永不变'
+                ]
+            }
+        ];
+        
+        let currentSongId = 1;
+        
+        // 渲染歌词
+        function renderLyrics(songId) {
+            // 确保songCurrentTime已初始化
+            if (typeof songCurrentTime === 'undefined') {
+                window.songCurrentTime = 0;
+                songCurrentTime = 0;
+            }
+            
+            const song = songs.find(s => s.id === songId);
+            if (!song || !song.lyrics || !Array.isArray(song.lyrics)) {
+                console.warn('歌曲或歌词数据无效');
+                return;
+            }
+            
+            currentSongTitle.textContent = song.title;
+            currentSongArtist.textContent = song.artist;
+            
+            // 确保songDuration在全局范围内可访问
+            window.songDuration = song.duration || 240;
+            
+            // 清空歌词容器
+            lyricsContainer.innerHTML = '';
+            
+            // 添加歌词行，支持两种格式：带时间戳的对象和纯文本
+            song.lyrics.forEach((item, index) => {
+                const lyricLine = document.createElement('div');
+                lyricLine.className = 'lyric-line lyric-inactive'; // 初始状态为非活跃
+                
+                // 检查是否为带时间戳的歌词对象
+                if (typeof item === 'object' && item.time !== undefined && item.text !== undefined) {
+                    lyricLine.textContent = item.text;
+                    lyricLine.setAttribute('data-time', item.time);
+                } else {
+                    // 纯文本格式，为了兼容，分配默认时间戳
+                    const defaultTime = index * 3; // 假设每行约3秒
+                    lyricLine.textContent = item;
+                    lyricLine.setAttribute('data-time', defaultTime);
+                }
+                
+                lyricsContainer.appendChild(lyricLine);
+            });
+            
+            // 重置歌词位置
+            lyricsContainer.style.transform = 'translateY(0)';
+            
+            // 重置播放状态
+            songCurrentTime = 0;
+            isSongPlaying = false;
+            
+            // 确保第一行歌词显示为活跃状态（可选）
+            const firstLine = lyricsContainer.querySelector('.lyric-line');
+            if (firstLine) {
+                firstLine.classList.add('lyric-active');
+                firstLine.classList.remove('lyric-inactive');
+            }
+        }
+        
+        // 网易云音乐实际歌曲ID映射
+        const neteaseSongIds = {
+            1: '1336645930', // 古城谣
+            2: '1339912760', // 陌上桑
+            3: '1987019095', // 八月秋
+            4: '1423456789', // 长安月 - 示例ID
+            5: '1523456789', // 丝路谣 - 示例ID
+            6: '1623456789', // 水墨江南 - 示例ID
+            7: '1723456789', // 清风辞 - 示例ID
+            8: '1823456789', // 明月引 - 示例ID
+            9: '1923456789', // 山水吟 - 示例ID
+            10: '1023456789', // 江湖笑 - 示例ID
+            11: '1123456789', // 姑苏谣 - 示例ID
+            12: '1223456789'  // 一簪花信 - 示例ID
+        };
+
+        // 切换歌曲 - 改进版
+        function changeSong(newSongId) {
+            try {
+                // 更新歌曲选择器状态
+                songItems.forEach(item => {
+                    if (item && parseInt(item.getAttribute('data-song-id')) === newSongId) {
+                        item.classList.add('active');
+                    } else if (item) {
+                        item.classList.remove('active');
+                    }
+                });
+                
+                // 更新当前歌曲ID
+                currentSongId = newSongId;
+                
+                // 重置播放状态和进度
+                if (songPlayInterval) {
+                    clearInterval(songPlayInterval);
+                    songPlayInterval = null;
+                }
+                songCurrentTime = 0;
+                isSongPlaying = false;
+                
+                // 更新网易云音乐播放器，使用实际的网易云歌曲ID
+                if (neteasePlayer) {
+                    try {
+                        const actualNeteaseId = neteaseSongIds[newSongId] || '1336645930'; // 默认使用古城谣
+                        
+                        // 确保播放器容器可见
+                        const playerContainer = document.getElementById('netease-player-container');
+                        if (playerContainer) {
+                            playerContainer.style.display = 'block';
+                        }
+                        
+                        // 使用更可靠的URL格式，添加时间戳防止缓存问题
+                        const timestamp = new Date().getTime();
+                        const playerUrl = `https://music.163.com/outchain/player?type=2&id=${actualNeteaseId}&auto=1&height=66&t=${timestamp}`;
+                        
+                        // 先设置为空白，然后再设置实际URL，确保完全重新加载
+                        neteasePlayer.src = 'about:blank';
+                        
+                        // 延迟设置实际URL，确保空白页面完全加载
+                        setTimeout(() => {
+                            try {
+                                if (neteasePlayer) {
+                                    neteasePlayer.src = playerUrl;
+                                    console.log('播放器URL已更新:', playerUrl);
+                                }
+                            } catch (e) {
+                                console.error('设置播放器URL时出错:', e);
+                            }
+                        }, 100);
+                        
+                    } catch (e) {
+                        console.error('更新网易云播放器时出错:', e);
+                    }
+                } else {
+                    console.error('网易云播放器未找到');
+                }
+                
+                // 渲染歌词
+                renderLyrics(newSongId);
+            } catch (e) {
+                console.error('切换歌曲时出错:', e);
+            }
+        }
+        
+        // 绑定歌曲选择器事件
+        songItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const songId = parseInt(item.getAttribute('data-song-id'));
+                changeSong(songId);
+            });
+        });
+        
+        // 绑定播放按钮事件
+        document.querySelectorAll('.play-song-btn').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation(); // 阻止冒泡
+                const songItem = this.closest('.song-item');
+                const songId = parseInt(songItem.getAttribute('data-song-id'));
+                changeSong(songId);
+                togglePlay(); // 播放歌曲
+            });
+        });
+        
+        // 上一首/下一首按钮事件监听器已移除
+        
+        // 页面加载完成后初始化播放器
+        document.addEventListener('DOMContentLoaded', function() {
+            try {
+                console.log('页面加载完成，初始化播放器...');
+                
+                // 确保neteasePlayer已加载
+                setTimeout(() => {
+                    try {
+                        // 初始化默认歌曲
+                        if (neteasePlayer) {
+                            console.log('初始化默认歌曲播放...');
+                            changeSong(currentSongId);
+                            
+                            // 短暂延迟后尝试播放
+                            setTimeout(() => {
+                                try {
+                                    console.log('尝试自动播放...');
+                                    // 仅尝试设置状态，不实际调用togglePlay以尊重用户交互规则
+                                    isSongPlaying = false;
+                                } catch (e) {
+                                    console.error('自动播放初始化出错:', e);
+                                }
+                            }, 1000);
+                        } else {
+                            console.error('网易云播放器未找到，音频功能可能无法正常工作');
+                        }
+                    } catch (e) {
+                        console.error('播放器初始化出错:', e);
+                    }
+                }, 500);
+            } catch (e) {
+                console.error('页面初始化出错:', e);
+            }
+        });
+        
+        // 渲染初始歌词
+        renderLyrics(currentSongId);
+        
+
+        
+        // 歌词功能
+        // 歌词数据
+        const lyricsData = {
+            '000vesUE0mid22': [
+                { time: 0, text: '古城谣 - 语梦' },
+                { time: 2, text: '古墙斑驳了时光' },
+                { time: 6, text: '青石板刻过了过往' },
+                { time: 10, text: '老茶馆谁留着茶香' },
+                { time: 14, text: '说书人讲着旧朝的章' },
+                { time: 18, text: '烟雨巷油纸伞彷徨' },
+                { time: 22, text: '乌篷船摇曳着惆怅' },
+                { time: 26, text: '琵琶声诉说着离殇' },
+                { time: 30, text: '谁的泪湿湿了眼眶' },
+                { time: 34, text: '古谣唱唱唱尽了沧桑' },
+                { time: 38, text: '岁月长模糊了模样' },
+                { time: 42, text: '旧时光再也在了谁的伤' },
+                { time: 46, text: '回忆停留在那年那巷' },
+                { time: 50, text: '古谣谣唱不完离殇' },
+                { time: 54, text: '故事长谁在轻声讲' },
+                { time: 58, text: '岁月模糊了旧模样' },
+                { time: 62, text: '回忆停留在那年那巷' }
+            ],
+            '001qV6rB3tR4XH': [
+                { time: 0, text: '陌上桑 - 沐稍' },
+                { time: 3, text: '陌上桑叶正肥' },
+                { time: 7, text: '采女采桑露湿衣' },
+                { time: 11, text: '蚕儿肥桑叶稀' },
+                { time: 15, text: '采女采桑日西归' },
+                { time: 19, text: '陌上桑叶正肥' },
+                { time: 23, text: '采桑女歌声飞' },
+                { time: 27, text: '蚕儿肥桑叶稀' },
+                { time: 31, text: '采桑女盼郎归' },
+                { time: 35, text: '陌上桑叶正肥' },
+                { time: 39, text: '采桑女泪思归' },
+                { time: 43, text: '蚕儿肥桑叶稀' },
+                { time: 47, text: '采桑女泪沾衣' },
+                { time: 51, text: '陌上桑叶正肥' },
+                { time: 55, text: '采桑女心已碎' },
+                { time: 59, text: '蚕儿肥桑叶稀' },
+                { time: 63, text: '采桑女盼郎归' }
+            ],
+            '003ZtJ9R2KzL7e': [
+                { time: 0, text: '八月秋 - 沐稍' },
+                { time: 2, text: '八月秋风渐凉' },
+                { time: 6, text: '雁南飞排成行' },
+                { time: 10, text: '落叶黄满地殇' },
+                { time: 14, text: '相思苦断人肠' },
+                { time: 18, text: '八月秋月正圆' },
+                { time: 22, text: '人千里共婵娟' },
+                { time: 26, text: '杯中酒醉容颜' },
+                { time: 30, text: '相思泪湿衣衫' },
+                { time: 34, text: '八月秋风渐凉' },
+                { time: 38, text: '雁南飞排成行' },
+                { time: 42, text: '落叶黄满地殇' },
+                { time: 46, text: '相思苦断人肠' },
+                { time: 50, text: '八月秋月正圆' },
+                { time: 54, text: '人千里共婵娟' },
+                { time: 58, text: '杯中酒醉容颜' },
+                { time: 62, text: '相思泪湿衣衫' }
+            ]
+        };
+        
+        // 更新歌词显示
+        function updateLyrics(songId) {
+            try {
+                // 获取当前歌曲数据
+                const song = songs.find(s => s.id === parseInt(songId)) || songs[0];
+                if (!song || !song.lyrics || !Array.isArray(song.lyrics)) {
+                    console.warn('歌曲或歌词数据无效');
+                    return;
+                }
+                
+                const lyrics = song.lyrics;
+                
+                // 清空歌词容器
+                lyricsContainer.innerHTML = '';
+                
+                // 添加歌词行，支持两种格式：带时间戳的对象和纯文本
+                lyrics.forEach((item, index) => {
+                    const lyricLine = document.createElement('div');
+                    lyricLine.className = 'lyric-line lyric-inactive'; // 初始状态为非活跃
+                    
+                    // 检查是否为带时间戳的歌词对象
+                    if (typeof item === 'object' && item.time !== undefined && item.text !== undefined) {
+                        lyricLine.textContent = item.text;
+                        lyricLine.setAttribute('data-time', item.time);
+                    } else {
+                        // 纯文本格式，为了兼容，分配默认时间戳
+                        const defaultTime = index * 3; // 假设每行约3秒
+                        lyricLine.textContent = item;
+                        lyricLine.setAttribute('data-time', defaultTime);
+                    }
+                    
+                    lyricsContainer.appendChild(lyricLine);
+                });
+                
+                // 高亮第一行
+                const firstLine = lyricsContainer.firstChild;
+                if (firstLine) {
+                    firstLine.classList.add('lyric-active');
+                    firstLine.classList.remove('lyric-inactive');
+                }
+                
+                // 重置滚动位置
+                lyricsContainer.style.transform = 'translateY(0)';
+            } catch (error) {
+                console.error('更新歌词出错:', error);
+            }
+        }
+        
+        // 歌词同步
+        function syncLyrics(currentTime) {
+            try {
+                // 确保歌词容器存在
+                if (!lyricsContainer || !lyricsScrollWrapper) {
+                    console.warn('歌词容器未找到');
+                    return;
+                }
+                
+                const lyricLines = lyricsContainer.querySelectorAll('.lyric-line');
+                if (lyricLines.length === 0) {
+                    console.warn('没有找到歌词行');
+                    return;
+                }
+                
+                let activeIndex = -1;
+                
+                // 优化的歌词高亮逻辑 - 找到最新的、时间戳小于等于当前时间的歌词行
+                for (let i = 0; i < lyricLines.length; i++) {
+                    const lineTimeStr = lyricLines[i].getAttribute('data-time');
+                    
+                    // 确保data-time属性存在且有效
+                    if (!lineTimeStr) continue;
+                    
+                    const lineTime = parseFloat(lineTimeStr);
+                    if (!isNaN(lineTime) && currentTime >= lineTime) {
+                        activeIndex = i;
+                    } else if (activeIndex !== -1) {
+                        // 一旦找到第一个超过当前时间的行，就不再继续查找
+                        break;
+                    }
+                }
+                
+                // 确保activeIndex在有效范围内
+                if (activeIndex >= 0 && activeIndex < lyricLines.length) {
+                    // 更新高亮状态 - 使用CSS类而不是直接设置样式
+                    lyricLines.forEach((line, index) => {
+                        if (index === activeIndex) {
+                            line.classList.add('lyric-active');
+                            line.classList.remove('lyric-inactive');
+                        } else {
+                            line.classList.add('lyric-inactive');
+                            line.classList.remove('lyric-active');
+                        }
+                    });
+                    
+                    // 滚动歌词 - 实现更平滑的滚动效果
+                    const activeLine = lyricLines[activeIndex];
+                    const containerHeight = lyricsScrollWrapper.clientHeight;
+                    const lineHeight = activeLine.clientHeight || 30; // 设置默认值以防clientHeight为0
+                    const activeLineTop = activeLine.offsetTop;
+                    
+                    // 计算滚动位置，确保当前行居中显示
+                    const targetScroll = activeLineTop - containerHeight / 2 + lineHeight / 2;
+                    const safeScroll = Math.max(0, targetScroll);
+                    
+                    // 添加平滑滚动过渡
+                    lyricsContainer.style.transition = 'transform 0.5s ease-out';
+                    lyricsContainer.style.transform = `translateY(-${safeScroll}px)`;
+                }
+            } catch (error) {
+                console.error('歌词同步出错:', error);
+            }
+        }
+        
+        // 播放器控制
+        const neteasePlayer = document.getElementById('netease-player');
+        // 获取页面上实际存在的播放按钮
+        const playButtons = document.querySelectorAll('.play-song-btn');
+        const currentTimeDisplay = document.createElement('div');
+        const totalTimeDisplay = document.createElement('div');
+        
+        // 创建进度条元素并隐藏
+        const progressBar = document.createElement('div');
+        progressBar.style.width = '0%';
+        // currentSongTitle已在前面声明
+        // currentSongArtist已在前面声明
+        
+        // 当前播放的歌曲ID (已在前面声明)
+        
+        // 歌曲数据映射，用于播放器功能
+        const songsMap = {};
+        songs.forEach(song => {
+            songsMap[song.id.toString()] = song;
+        });
+        
+        // 模拟音乐播放进度
+        // songDuration现在使用window.songDuration以确保全局访问
+        // songCurrentTime, isSongPlaying, songPlayInterval已在脚本开头声明
+        
+        // 更新播放按钮状态
+        function updatePlayButtonState() {
+            try {
+                if (playButtons && playButtons.length > 0) {
+                    playButtons.forEach(btn => {
+                        if (btn) {
+                            btn.innerHTML = isSongPlaying 
+                                ? '<i class="fa fa-pause mr-1"></i> 暂停' 
+                                : '<i class="fa fa-play mr-1"></i> 播放';
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('更新播放按钮状态出错:', error);
+            }
+        }
+
+        // 更新进度条和时间显示
+        function updateProgress() {
+            try {
+                const duration = window.songDuration || 240;
+                const progress = (songCurrentTime / duration) * 100;
+                progressBar.style.width = `${progress}%`;
+                
+                // 格式化时间
+                const currentMinutes = Math.floor(songCurrentTime / 60);
+                const currentSeconds = songCurrentTime % 60;
+                currentTimeDisplay.textContent = `${currentMinutes.toString().padStart(2, '0')}:${currentSeconds.toString().padStart(2, '0')}`;
+                
+                // 同步歌词滚动
+                if (typeof syncLyrics === 'function' && songCurrentTime >= 0) {
+                    syncLyrics(songCurrentTime);
+                }
+                
+                const totalMinutes = Math.floor(duration / 60);
+                const totalSeconds = duration % 60;
+                totalTimeDisplay.textContent = `${totalMinutes.toString().padStart(2, '0')}:${totalSeconds.toString().padStart(2, '0')}`;
+                
+                // 检查是否播放结束
+                if (songCurrentTime >= duration && duration > 0 && isSongPlaying) {
+                    // 歌曲结束
+                    clearInterval(songPlayInterval);
+                    isSongPlaying = false;
+                    songCurrentTime = 0;
+                    updatePlayButtonState();
+                    
+                    // 歌曲结束，不自动播放下一首
+                }
+            } catch (error) {
+                console.error('更新进度出错:', error);
+            }
+        }
+        
+        // 播放下一首歌曲功能已移除
+        
+        // 播放/暂停切换 - 重新设计
+        function togglePlay() {
+            try {
+                // 确保neteasePlayer存在
+                if (!neteasePlayer) {
+                    console.error('网易云播放器未找到');
+                    return;
+                }
+                
+                // 确保播放器容器可见
+                const playerContainer = document.getElementById('netease-player-container');
+                if (playerContainer) {
+                    playerContainer.style.display = 'block';
+                }
+                
+                if (isSongPlaying) {
+                    // 暂停播放
+                    clearInterval(songPlayInterval);
+                    isSongPlaying = false;
+                    
+                    // 尝试通过API或其他方式暂停（iframe内容安全限制可能阻止直接操作）
+                    try {
+                        // 创建新的iframe URL但使用auto=0参数
+                        if (neteasePlayer.src && !neteasePlayer.src.includes('about:blank')) {
+                            const currentSrc = neteasePlayer.src;
+                            const timestamp = new Date().getTime();
+                            // 保留原始歌曲ID但设置auto=0
+                            const newSrc = currentSrc.replace(/auto=\d/, 'auto=0').replace(/&t=\d+/, '') + '&t=' + timestamp;
+                            neteasePlayer.src = newSrc;
+                        }
+                    } catch (e) {
+                        console.warn('无法通过iframe API暂停，但已停止进度更新');
+                    }
+                    
+                    // 更新播放按钮状态
+                    updatePlayButtonState();
+                } else {
+                    // 开始播放
+                    if (!neteasePlayer.src || neteasePlayer.src.includes('about:blank') || !neteasePlayer.src.includes('music.163.com')) {
+                        // 如果播放器没有设置歌曲，使用默认歌曲
+                        const defaultSongId = currentSongId || 1;
+                        const actualNeteaseId = neteaseSongIds[defaultSongId] || '1336645930'; // 默认使用古城谣
+                        const timestamp = new Date().getTime();
+                        neteasePlayer.src = `https://music.163.com/outchain/player?type=2&id=${actualNeteaseId}&auto=1&height=66&t=${timestamp}`;
+                    } else {
+                        // 已有歌曲，尝试重新加载播放
+                        try {
+                            const currentSrc = neteasePlayer.src;
+                            const timestamp = new Date().getTime();
+                            // 确保auto=1并添加时间戳
+                            const newSrc = currentSrc.replace(/auto=\d/, 'auto=1').replace(/&t=\d+/, '') + '&t=' + timestamp;
+                            neteasePlayer.src = newSrc;
+                        } catch (e) {
+                            console.error('重新加载播放器出错:', e);
+                        }
+                    }
+                    
+                    // 启动进度更新
+                    songPlayInterval = setInterval(() => {
+                        songCurrentTime += 1;
+                        updateProgress();
+                    }, 1000);
+                    
+                    isSongPlaying = true;
+                    // 更新播放按钮状态
+                    updatePlayButtonState();
+                }
+            } catch (e) {
+                console.error('播放控制出错:', e);
+                isSongPlaying = false;
+                updatePlayButtonState();
+            }
+        }
+        
+        // 为所有播放按钮绑定点击事件
+        playButtons.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                // 阻止冒泡，避免触发song-item的点击事件
+                e.stopPropagation();
+                togglePlay();
+            });
+        });
+        
+        // 歌曲切换功能
+        document.querySelectorAll('.song-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const songId = this.getAttribute('data-song-id');
+                const song = songsMap[songId] || songs.find(s => s.id === parseInt(songId));
+                
+                if (song) {
+                    currentSongId = song.id;
+                    
+                    // 更新播放器信息
+                    currentSongTitle.textContent = song.title;
+                    currentSongArtist.textContent = song.artist;
+                    window.songDuration = song.duration || 240;
+                    
+                    // 更新网易云音乐播放器，使用实际的网易云歌曲ID
+                    const actualNeteaseId = neteaseSongIds[songId] || '1336645930'; // 默认使用古城谣
+                    // 确保播放器容器可见
+                    const playerContainer = document.getElementById('netease-player-container');
+                    if (playerContainer) {
+                        playerContainer.style.display = 'block';
+                    }
+                    // 使用时间戳防止缓存问题，强制重新加载
+                    const timestamp = new Date().getTime();
+                    neteasePlayer.src = `https://music.163.com/outchain/player?type=2&id=${actualNeteaseId}&auto=1&height=66&t=${timestamp}`;
+                    
+                    // 更新歌词
+                    updateLyrics(currentSongId);
+                    
+                    // 重置播放进度
+                    songCurrentTime = 0;
+                    updateProgress();
+                    
+                    // 开始播放
+                    if (!isSongPlaying) {
+                        togglePlay();
+                    }
+                }
+            });
+        });
+        
+        // 初始化显示古城谣歌词
+        document.addEventListener('DOMContentLoaded', function() {
+            updateLyrics(currentSongId);
+        });
+        
+        // 初始化歌词
+        updateLyrics(currentSongId);
+        // 留言数据管理
+        const MessageManager = {
+            // 从本地存储获取留言
+            getMessages() {
+                const messages = localStorage.getItem('musicianMessages');
+                return messages ? JSON.parse(messages) : [];
+            },
+            
+            // 保存留言到本地存储
+            saveMessage(message) {
+                const messages = this.getMessages();
+                messages.push({
+                    id: Date.now(),
+                    name: message.name,
+                    email: message.email,
+                    subject: message.subject,
+                    message: message.message,
+                    date: new Date().toISOString(),
+                    read: false
+                });
+                localStorage.setItem('musicianMessages', JSON.stringify(messages));
+                return true;
+            },
+            
+            // 更新留言状态
+            updateMessage(id, data) {
+                const messages = this.getMessages();
+                const index = messages.findIndex(msg => msg.id === id);
+                if (index !== -1) {
+                    messages[index] = { ...messages[index], ...data };
+                    localStorage.setItem('musicianMessages', JSON.stringify(messages));
+                    return true;
+                }
+                return false;
+            },
+            
+            // 删除留言
+            deleteMessage(id) {
+                const messages = this.getMessages();
+                const newMessages = messages.filter(msg => msg.id !== id);
+                localStorage.setItem('musicianMessages', JSON.stringify(newMessages));
+                return true;
+            },
+            
+            // 获取未读留言数量
+            getUnreadCount() {
+                const messages = this.getMessages();
+                return messages.filter(msg => !msg.read).length;
+            }
+        };
+        
+        // 管理员认证
+        const AdminAuth = {
+            // 验证管理员凭据（实际应用中应该使用更安全的验证方式）
+            validateCredentials(username, password) {
+                // 这里使用硬编码的凭据，实际应用中应该从服务器获取
+                const adminUsername = 'admin';
+                const adminPassword = 'moyoubai123';
+                
+                return username === adminUsername && password === adminPassword;
+            },
+            
+            // 检查是否已登录
+            isLoggedIn() {
+                return localStorage.getItem('adminLoggedIn') === 'true';
+            },
+            
+            // 登录
+            login() {
+                localStorage.setItem('adminLoggedIn', 'true');
+            },
+            
+            // 登出
+            logout() {
+                localStorage.setItem('adminLoggedIn', 'false');
+            }
+        };
+        
+        // 留言表单提交处理
+        const contactForm = document.getElementById('contact-form');
+        
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 获取表单数据
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+            
+            // 表单验证
+            if (!name || !email || !subject || !message) {
+                alert('请填写完整的留言信息！');
+                return;
+            }
+            
+            // 保存留言
+            MessageManager.saveMessage({ name, email, subject, message });
+            
+            // 创建留言提示元素
+            const notification = document.createElement('div');
+            notification.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden';
+            notification.id = 'message-notification';
+            
+            // 水墨晕染效果的SVG
+            const inkEffect = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+            inkEffect.setAttribute('width', '100%');
+            inkEffect.setAttribute('height', '100%');
+            inkEffect.style.position = 'absolute';
+            inkEffect.style.top = '0';
+            inkEffect.style.left = '0';
+            inkEffect.style.zIndex = '-1';
+            
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', '50%');
+            circle.setAttribute('cy', '50%');
+            circle.setAttribute('r', '0');
+            circle.setAttribute('fill', 'rgba(220, 38, 38, 0.2)');
+            circle.style.transition = 'r 1.5s ease-out';
+            inkEffect.appendChild(circle);
+            
+            // 通知内容
+            const notificationContent = document.createElement('div');
+            notificationContent.className = 'bg-gray-900 bg-opacity-90 p-8 rounded-lg max-w-md w-full mx-4 border border-red-900 shadow-xl';
+            
+            // 古风图标
+            const iconContainer = document.createElement('div');
+            iconContainer.className = 'text-center mb-6';
+            iconContainer.innerHTML = `
+                <div class="inline-block p-3 rounded-full bg-red-900 bg-opacity-30">
+                    <i class="fa fa-paper-plane text-3xl text-accent"></i>
+                </div>
+            `;
+            
+            // 通知标题和内容
+            const notificationTitle = document.createElement('h3');
+            notificationTitle.className = 'text-2xl font-bold mb-4 text-center text-white';
+            notificationTitle.textContent = '留言已送达';
+            
+            const notificationMessage = document.createElement('p');
+            notificationMessage.className = 'text-gray-300 mb-6 text-center';
+            notificationMessage.innerHTML = `
+                <span class="text-accent">${name}</span>，您的留言已成功发送！<br>
+                莫攸白将在24小时内查看并回复。
+            `;
+            
+            // 关闭按钮
+            const closeButton = document.createElement('button');
+            closeButton.className = 'w-full bg-secondary hover:bg-opacity-80 text-white py-3 rounded-lg transition-all transform hover:scale-105';
+            closeButton.textContent = '确定';
+            closeButton.addEventListener('click', function() {
+                notification.classList.add('hidden');
+                contactForm.reset();
+            });
+            
+            // 组装通知
+            notificationContent.appendChild(iconContainer);
+            notificationContent.appendChild(notificationTitle);
+            notificationContent.appendChild(notificationMessage);
+            notificationContent.appendChild(closeButton);
+            notification.appendChild(inkEffect);
+            notification.appendChild(notificationContent);
+            
+            // 添加到页面
+            document.body.appendChild(notification);
+            
+            // 显示通知并触发水墨晕染效果
+            setTimeout(() => {
+                notification.classList.remove('hidden');
+                notification.classList.add('flex');
+                
+                // 触发水墨晕染动画
+                setTimeout(() => {
+                    const maxRadius = Math.sqrt(Math.pow(window.innerWidth, 2) + Math.pow(window.innerHeight, 2));
+                    circle.setAttribute('r', maxRadius.toString());
+                }, 10);
+            }, 100);
+            
+            // 模拟通知音乐人
+            setTimeout(() => {
+                console.log('模拟通知音乐人：有新留言');
+                console.log(`留言人：${name}`);
+                console.log(`邮箱：${email}`);
+                console.log(`主题：${subject}`);
+                console.log(`内容：${message}`);
+                
+                // 这里可以添加实际的邮件发送API调用
+                // 例如使用fetch或axios发送POST请求到后端API
+                // fetch('/api/send-message', {
+                //   method: 'POST',
+                //   headers: {
+                //     'Content-Type': 'application/json',
+                //   },
+                //   body: JSON.stringify({ name, email, subject, message }),
+                // })
+                // .then(response => response.json())
+                // .then(data => console.log('Message sent successfully:', data))
+                // .catch(error => console.error('Error sending message:', error));
+            }, 1000);
+        });
+        
+        // 管理员登录功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const adminLoginBtn = document.getElementById('admin-login-btn');
+            const adminLoginModal = document.getElementById('admin-login-modal');
+            const closeLoginModal = document.getElementById('close-login-modal');
+            const adminLoginForm = document.getElementById('admin-login-form');
+            const loginError = document.getElementById('login-error');
+            const messageManagement = document.getElementById('message-management');
+            const logoutAdmin = document.getElementById('logout-admin');
+            const closeManagement = document.getElementById('close-management');
+            const refreshMessages = document.getElementById('refresh-messages');
+            const messagesList = document.getElementById('messages-list');
+            const noMessages = document.getElementById('no-messages');
+            const messageDetailModal = document.getElementById('message-detail-modal');
+            const closeDetailModal = document.getElementById('close-detail-modal');
+            const messageDetailContent = document.getElementById('message-detail-content');
+            const deleteMessage = document.getElementById('delete-message');
+            const closeDetail = document.getElementById('close-detail');
+            
+            // 当前查看的留言ID
+            let currentMessageId = null;
+            
+            // 显示登录模态框
+            adminLoginBtn.addEventListener('click', function() {
+                adminLoginModal.classList.remove('hidden');
+            });
+            
+            // 关闭登录模态框
+            closeLoginModal.addEventListener('click', function() {
+                adminLoginModal.classList.add('hidden');
+                loginError.classList.add('hidden');
+                adminLoginForm.reset();
+            });
+            
+            // 管理员登录
+            adminLoginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('admin-username').value;
+                const password = document.getElementById('admin-password').value;
+                
+                if (AdminAuth.validateCredentials(username, password)) {
+                    AdminAuth.login();
+                    adminLoginModal.classList.add('hidden');
+                    showMessageManagement();
+                } else {
+                    loginError.classList.remove('hidden');
+                }
+            });
+            
+            // 显示留言管理界面
+            function showMessageManagement() {
+                messageManagement.classList.remove('hidden');
+                loadMessages();
+            }
+            
+            // 加载留言列表
+            function loadMessages() {
+                const messages = MessageManager.getMessages();
+                
+                if (messages.length === 0) {
+                    messagesList.classList.add('hidden');
+                    noMessages.classList.remove('hidden');
+                    return;
+                }
+                
+                messagesList.classList.remove('hidden');
+                noMessages.classList.add('hidden');
+                
+                // 清空列表
+                messagesList.innerHTML = '';
+                
+                // 按时间倒序排序
+                messages.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                // 创建留言卡片
+                messages.forEach(message => {
+                    const card = document.createElement('div');
+                    card.className = `bg-gray-800 p-6 rounded-lg cursor-pointer transition-all hover:shadow-lg hover:scale-[1.02] ${message.read ? '' : 'border-l-4 border-accent'}`;
+                    
+                    const date = new Date(message.date);
+                    const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+                    
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-4">
+                            <h4 class="text-xl font-bold text-white">${message.subject}</h4>
+                            ${!message.read ? '<span class="bg-accent text-black text-xs px-2 py-1 rounded-full">未读</span>' : ''}
+                        </div>
+                        <p class="text-gray-400 mb-2">
+                            <i class="fa fa-user mr-2"></i>${message.name}
+                        </p>
+                        <p class="text-gray-400 mb-4">
+                            <i class="fa fa-envelope mr-2"></i>${message.email}
+                        </p>
+                        <p class="text-gray-500 text-sm mb-4 line-clamp-2">${message.message}</p>
+                        <p class="text-gray-600 text-xs">${formattedDate}</p>
+                    `;
+                    
+                    card.addEventListener('click', () => {
+                        showMessageDetail(message);
+                    });
+                    
+                    messagesList.appendChild(card);
+                });
+            }
+            
+            // 显示留言详情
+            function showMessageDetail(message) {
+                currentMessageId = message.id;
+                
+                // 标记为已读
+                if (!message.read) {
+                    MessageManager.updateMessage(message.id, { read: true });
+                }
+                
+                const date = new Date(message.date);
+                const formattedDate = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')} ${String(date.getHours()).padStart(2, '0')}:${String(date.getMinutes()).padStart(2, '0')}`;
+                
+                messageDetailContent.innerHTML = `
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <p class="text-gray-400 mb-1">留言人</p>
+                            <p class="text-white text-lg">${message.name}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-400 mb-1">邮箱</p>
+                            <p class="text-white text-lg">${message.email}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <p class="text-gray-400 mb-1">主题</p>
+                        <p class="text-white text-xl font-bold">${message.subject}</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <p class="text-gray-400 mb-1">留言内容</p>
+                        <div class="bg-gray-800 p-6 rounded-lg text-white">
+                            ${message.message.replace(/\n/g, '<br>')}
+                        </div>
+                    </div>
+                    
+                    <div class="text-right">
+                        <p class="text-gray-500 text-sm">${formattedDate}</p>
+                    </div>
+                `;
+                
+                messageDetailModal.classList.remove('hidden');
+            }
+            
+            // 关闭留言详情
+            closeDetailModal.addEventListener('click', function() {
+                messageDetailModal.classList.add('hidden');
+                loadMessages(); // 重新加载列表以更新已读状态
+            });
+            
+            closeDetail.addEventListener('click', function() {
+                messageDetailModal.classList.add('hidden');
+                loadMessages(); // 重新加载列表以更新已读状态
+            });
+            
+            // 删除留言
+            deleteMessage.addEventListener('click', function() {
+                if (confirm('确定要删除这条留言吗？')) {
+                    MessageManager.deleteMessage(currentMessageId);
+                    messageDetailModal.classList.add('hidden');
+                    loadMessages();
+                }
+            });
+            
+            // 刷新留言列表
+            refreshMessages.addEventListener('click', function() {
+                loadMessages();
+            });
+            
+            // 管理员登出
+            logoutAdmin.addEventListener('click', function() {
+                AdminAuth.logout();
+                messageManagement.classList.add('hidden');
+            });
+            
+            // 关闭留言管理界面
+            closeManagement.addEventListener('click', function() {
+                messageManagement.classList.add('hidden');
+            });
+            
+            // 检查未读留言并显示提示
+            function checkUnreadMessages() {
+                const unreadCount = MessageManager.getUnreadCount();
+                if (unreadCount > 0) {
+                    const adminBtn = document.getElementById('admin-login-btn');
+                    const badge = document.createElement('span');
+                    badge.className = 'absolute -top-2 -right-2 bg-accent text-black text-xs w-6 h-6 flex items-center justify-center rounded-full';
+                    badge.textContent = unreadCount;
+                    adminBtn.appendChild(badge);
+                }
+            }
+            
+            // 页面加载时检查未读留言
+            checkUnreadMessages();
+        });
+    </script>
+
+
+</body></html>
