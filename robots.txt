@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://moyoubai1.github.io/moyoubai1/sitemap.xml
