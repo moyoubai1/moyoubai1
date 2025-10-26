@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:ror="http://rorweb.com/0.1/" >
+<channel>
+  <title>ROR Sitemap for https://moyoubai1.github.io/moyoubai1/</title>
+  <link>https://moyoubai1.github.io/moyoubai1/</link>
+
+<item>
+     <link>https://moyoubai1.github.io/moyoubai1/</link>
+     <title>莫攸白 - 独立音乐人</title>
+     <description>莫攸白 - 独立音乐人</description>
+     <ror:updatePeriod></ror:updatePeriod>
+     <ror:sortOrder>0</ror:sortOrder>
+     <ror:resourceOf>sitemap</ror:resourceOf>
+</item>
+<item>
+     <link>https://moyoubai1.github.io/moyoubai1/audio-albums.html</link>
+     <title>莫攸白 - 电子有声专辑</title>
+     <description>莫攸白 - 电子有声专辑</description>
+     <ror:updatePeriod></ror:updatePeriod>
+     <ror:sortOrder>1</ror:sortOrder>
+     <ror:resourceOf>sitemap</ror:resourceOf>
+</item>
+<item>
+     <link>https://moyoubai1.github.io/moyoubai1/e-books.html</link>
+     <title>莫攸白 - 电子书籍</title>
+     <description>莫攸白 - 电子书籍</description>
+     <ror:updatePeriod></ror:updatePeriod>
+     <ror:sortOrder>1</ror:sortOrder>
+     <ror:resourceOf>sitemap</ror:resourceOf>
+</item>
+<item>
+     <link>https://moyoubai1.github.io/moyoubai1/index.html</link>
+     <title>莫攸白 - 独立音乐人</title>
+     <description>莫攸白 - 独立音乐人</description>
+     <ror:updatePeriod></ror:updatePeriod>
+     <ror:sortOrder>2</ror:sortOrder>
+     <ror:resourceOf>sitemap</ror:resourceOf>
+</item>
+</channel>
+</rss>
+  
